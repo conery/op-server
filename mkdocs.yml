@@ -1,0 +1,15 @@
+site_name: OptiPass Server
+
+theme:
+  name: "readthedocs"
+
+extra_css:
+  - css/tidegates.css
+  
+plugins:
+  - search
+  - mkdocstrings
+
+nav:
+  - "Home":
+    - index.md
