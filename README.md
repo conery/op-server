@@ -5,8 +5,6 @@ A key component of the system is a program named OptiPass, developed by Jesse O'
 
 In order to avoid requiring end users to install OptiPass and the libraries it depends on we developed a web application so users simply have to connect to a server from their web browser.  
 
-This repo has the code for a REST server that manages a tide gate database and provides an interface to OptiPass.  A compan
-
 The web application has two components:  
 
 - `op-server` is a REST server, written in Python using FastAPI, that provides the interface OptiPass.
