@@ -71,6 +71,13 @@ def get_target_file(project, climate):
     else:
         return ''
 
+###
+# Return a list of project names.
+        
+@app.get("/projects")
+async def projects():
+    '''Return a list of project names (dataset names)'''
+    return project_names
 
 ###
 # Return a list of regions for a project.
