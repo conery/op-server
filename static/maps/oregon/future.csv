@@ -1,0 +1,10 @@
+abbrev,habitat,prepass,postpass,unscaled
+CO,sCO,PREPASS_CO,POSTPASS,Coho_salmon
+CH,sCH,PREPASS_CH,POSTPASS,Chinook_salmon
+ST,sST,PREPASS_ST,POSTPASS,Steelhead
+CU,sCU,PREPASS_CU,POSTPASS,Chum
+FI,sInundHab_Future,PREPASS_Inund,POSTPASS,InundHab_Future
+AG,sAgri_Future,PREPASS_AgrInf,POSTPASS,Agri_Future
+RR,sRoadRail_Future,PREPASS_AgrInf,POSTPASS,RoadRail_Future
+BL,sBuilding_Future,PREPASS_AgrInf,POSTPASS,Building_Future
+PS,sPublicUse_Future,PREPASS_AgrInf,POSTPASS,PublicUse_Future

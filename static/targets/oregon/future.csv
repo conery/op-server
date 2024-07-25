@@ -1,11 +1,11 @@
-abbrev,long,short,habitat,prepass,postpass,unscaled,label,infra
-CO,Coho Streams,Coho,sCO,PREPASS_CO,POSTPASS,Coho_salmon,Habitat Potential (miles),False
-CH,Chinook Streams,Chinook,sCH,PREPASS_CH,POSTPASS,Chinook_salmon,Habitat Potential (miles),False
-ST,Steelhead Streams,Steelhead,sST,PREPASS_ST,POSTPASS,Steelhead,Habitat Potential (miles),False
-CT,Cutthroat Streams,Cutthroat,sCT,PREPASS_CT,POSTPASS,Cutthroat_Trout,Habitat Potential (miles),False
-CU,Chum Streams,Chum,sCU,PREPASS_CU,POSTPASS,Chum,Habitat Potential (miles),False
-FI,Fish Habitat Inundation,Inund,sInundHab_Future,PREPASS_Inund,POSTPASS,InundHab_Future,Habitat Potential (acres),True
-AG,Agriculture,Agric,sAgri_Future,PREPASS_AgrInf,POSTPASS,Agri_Future,Farmland Potentially Protected (acres),True
-RR,Roads & Railroads,Roads,sRoadRail_Future,PREPASS_AgrInf,POSTPASS,RoadRail_Future,Roads Potentially Protected (miles),True
-BL,Buildings,Bldgs,sBuilding_Future,PREPASS_AgrInf,POSTPASS,Building_Future,Buldings Potentially Protected,True
-PS,Public-Use Structures,Public,sPublicUse_Future,PREPASS_AgrInf,POSTPASS,PublicUse_Future,Structures Potentially Protected,True
+abbrev,long,short,label,infra
+CO,Coho Streams,Coho,Habitat Potential (miles),False
+CH,Chinook Streams,Chinook,Habitat Potential (miles),False
+ST,Steelhead Streams,Steelhead,Habitat Potential (miles),False
+CT,Cutthroat Streams,Cutthroat,Habitat Potential (miles),False
+CU,Chum Streams,Chum,Habitat Potential (miles),False
+FI,Fish Habitat Inundation,Inund,Habitat Potential (acres),True
+AG,Agriculture,Agric,Farmland Potentially Protected (acres),True
+RR,Roads & Railroads,Roads,Roads Potentially Protected (miles),True
+BL,Buildings,Bldgs,Buldings Potentially Protected,True
+PS,Public-Use Structures,Public,Structures Potentially Protected,True
