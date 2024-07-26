@@ -1,5 +1,5 @@
 abbrev,habitat,prepass,postpass,unscaled
-CO,CO,PREPASS_CO,POSTPASS,Coho_salmon
+CO,sCO,PREPASS_CO,POSTPASS,Coho_salmon
 CH,sCH,PREPASS_CH,POSTPASS,Chinook_salmon
 ST,sST,PREPASS_ST,POSTPASS,Steelhead
 CT,sCT,PREPASS_CT,POSTPASS,Cutthroat_Trout

@@ -46,8 +46,23 @@ for project in project_names:
     target_dir = Path(TARGETS) / project
     target_files[project] = [ f.parts[-1] for f in target_dir.glob('*.csv') ]
 
+MAPS = 'static/maps'
+
+map_files = { }
+for project in project_names:
+    map_dir = Path(MAPS) / project
+    map_files[project] = [ f.parts[-1] for f in map_dir.glob('*.csv') ]
+
 ###
 # Utilities for reading data files for a project
+
+def target_file_name(project, climate):
+    if climate is None:
+        return Path(TARGETS) / project / target_files[project][0]
+    elif climate+'.csv' in target_files[project]:
+        return Path(TARGETS) / project / climate+'.csv'
+    else:
+        return ''
     
 def read_csv_file(project, area, fn):
     p = Path(area) / project / fn
@@ -62,14 +77,6 @@ def read_target_file(project, climate):
     else:
         targets = None
     return targets
-
-def get_target_file(project, climate):
-    if climate is None:
-        return Path(TARGETS) / project / target_files[project][0]
-    elif climate+'.csv' in target_files[project]:
-        return Path(TARGETS) / project / climate+'.csv'
-    else:
-        return ''
 
 ###
 # Return a list of project names.
@@ -134,7 +141,7 @@ async def optipass(project: str, regions: str, targets: str, bmin: int, bcount: 
     try:
         assert project in project_names, f'unknown project: {project}'
         barrier_file = Path(BARRIERS) / project / BARRIER_FILE
-        target_file = get_target_file(project, climate)
+        target_file = target_file_name(project, climate)
         assert target_file, f'no targets in project "{project}" for climate: "{climate}"'
         region_list = regions.split(',')
         assert all(r in region_names[project] for r in region_list), f'unknown region in {regions}'
