@@ -162,7 +162,7 @@ cython_debug/
 #.idea/
 
 # Files and folders specific to the op-server project
-bin
-tmp
-oregon
+bin/
+tmp/
+oregon/
 
