@@ -30,6 +30,12 @@ app = FastAPI()
 BARRIERS = 'static/barriers'
 BARRIER_FILE = 'barriers.csv'
 
+TARGETS = 'static/targets'
+TARGET_FILE = 'targets.csv'
+
+COLNAMES = 'static/colnames'
+COLNAME_FILE = 'colnames.csv'
+
 project_names = [p.stem for p in Path(BARRIERS).iterdir()]
 
 region_names = { }
@@ -39,51 +45,51 @@ for project in project_names:
         f.readline()     # skip the header
         region_names[project] = { rec.split(',')[1] for rec in f }
 
-TARGETS = 'static/targets'
+# target_files = { }
+# for project in project_names:
+#     target_dir = Path(TARGETS) / project
+#     target_files[project] = [ f.parts[-1] for f in target_dir.glob('*.csv') ]
 
-target_files = { }
-for project in project_names:
-    target_dir = Path(TARGETS) / project
-    target_files[project] = [ f.parts[-1] for f in target_dir.glob('*.csv') ]
+# MAPS = 'static/maps'
 
-MAPS = 'static/maps'
-
-map_files = { }
-for project in project_names:
-    map_dir = Path(MAPS) / project
-    map_files[project] = [ f.parts[-1] for f in map_dir.glob('*.csv') ]
+# map_files = { }
+# for project in project_names:
+#     map_dir = Path(MAPS) / project
+#     map_files[project] = [ f.parts[-1] for f in map_dir.glob('*.csv') ]
 
 ###
 # Utilities for reading data files for a project
 
-def target_file_name(project, climate):
-    if climate is None:
-        return Path(TARGETS) / project / target_files[project][0]
-    elif climate+'.csv' in target_files[project]:
-        return Path(TARGETS) / project / climate+'.csv'
-    else:
-        return ''
+# def target_file_name(project, climate):
+#     if climate is None:
+#         return Path(TARGETS) / project / target_files[project][0]
+#     elif climate+'.csv' in target_files[project]:
+#         return Path(TARGETS) / project / climate+'.csv'
+#     else:
+#         return ''
     
 def read_csv_file(project, area, fn):
     p = Path(area) / project / fn
     with open(p) as f:
         return f.read().rstrip()
     
-def read_target_file(project, climate):
-    if climate is None:
-        targets = read_csv_file(project, TARGETS, target_files[project][0])
-    elif climate+'.csv' in target_files[project]:
-        targets = read_csv_file(project, TARGETS, climate+'.csv')
-    else:
-        targets = None
-    return targets
+# def read_target_file(project, climate):
+#     if climate is None:
+#         targets = read_csv_file(project, TARGETS, target_files[project][0])
+#     elif climate+'.csv' in target_files[project]:
+#         targets = read_csv_file(project, TARGETS, climate+'.csv')
+#     else:
+#         targets = None
+#     return targets
 
 ###
 # Return a list of project names.
         
 @app.get("/projects")
 async def projects():
-    '''Return a list of project names (dataset names)'''
+    '''
+    Return a list of project names (dataset) names.
+    '''
     return project_names
 
 ###
@@ -91,7 +97,9 @@ async def projects():
         
 @app.get("/regions/{project}")
 async def regions(project: str):
-    '''Return a list of regions (river names) for a project'''
+    '''
+    Return a list of regions (river names) for a project.
+    '''
     return {'project': project, 'regions': region_names.get(project)}
 
 ###
@@ -99,7 +107,9 @@ async def regions(project: str):
 
 @app.get("/barriers/{project}")
 async def barriers(project: str):
-    '''Return barrier data for a project'''
+    '''
+    Return barrier data for a project.
+    '''
     if project in project_names:
         barriers = read_csv_file(project, BARRIERS, BARRIER_FILE)
     else:
@@ -110,13 +120,42 @@ async def barriers(project: str):
 # Return the restoration target descriptions
 
 @app.get("/targets/{project}")
-async def targets(project: str, climate: str | None = None):
-    '''Return restoration target descriptions for a project'''
+async def targets(project: str):
+    '''
+    Return restoration target descriptions for a project.
+    '''
 
     if project in project_names:
-        targets = read_target_file(project, climate)
-
+        targets = read_csv_file(project, TARGETS, TARGET_FILE)
+    else:
+        targets = None
     return {'project': project, 'targets': targets}
+
+###
+# Return a description of the mappings for a project -- either a single file
+# named colnames.csv, or a directory with several CSV files.
+
+@app.get("/colnames/{project}")
+async def colnames(project: str):
+    '''
+    Return a description of the column name mappings for a project.
+    '''
+    cname_dir = Path(COLNAMES) / project
+    if not cname_dir.is_dir():
+        return None
+    cname_file = cname_dir / COLNAME_FILE
+    if cname_file.is_file():
+        return { 'name': None, 'files': [COLNAME_FILE]}
+    if not cname_dir.is_dir():
+        return None
+    alts = list(cname_dir.iterdir())
+    if len(alts) != 1:
+        return None
+    alt_name = alts[0]
+    if not alt_name.is_dir():
+        return None
+    cnames = [p.stem for p in alt_name.iterdir() if p.suffix == '.csv']
+    return { 'name': alt_name.name, 'files': cnames}
 
 ###
 # Run OptiPass.  Load the target and barrier data for the project, pass those
