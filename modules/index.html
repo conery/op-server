@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Modules - OptiPass Server</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../css/tidegates.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Modules";
+        var mkdocs_page_input_path = "modules.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> OptiPass Server
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Home</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="..">REST Server for OptiPass</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Installation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Modules</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#mainpy">main.py</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#initialization">Initialization</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#read_csv_file">read_csv_file</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#projects">projects</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#regions">regions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#barriers">barriers</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#targets">targets</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#colnames">colnames</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optipass">optipass</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#tables">tables</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tests/">Tests</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">OptiPass Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Documentation</li>
+      <li class="breadcrumb-item active">Modules</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="modules">Modules</h1>
+<p>The source code is in a folder named <code>app</code>.  There are only two source files in the folder, one (<code>main.py</code>) for the FastAPI application and one for running (<code>optipass.py</code>) that provides an abstract interface for running OptiPass</p>
+<pre><code>app
+├── main.py
+└── optipass.py
+</code></pre>
+<h2 id="mainpy"><code>main.py</code></h2>
+<h4 id="initialization">Initialization</h4>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Define global variables used in the rest of the application:
+paths to static data and names of static data files, a list of 
+names of projects, a dictionary of region names for each project.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Define global variables used in the rest of the application:</span>
+<span class="sd">    paths to static data and names of static data files, a list of </span>
+<span class="sd">    names of projects, a dictionary of region names for each project.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">global</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span><span class="p">,</span> <span class="n">TARGETS</span><span class="p">,</span> <span class="n">TARGET_FILE</span><span class="p">,</span> <span class="n">COLNAMES</span><span class="p">,</span> <span class="n">COLNAME_FILE</span>
+
+    <span class="n">BARRIERS</span> <span class="o">=</span> <span class="s1">&#39;static/barriers&#39;</span>
+    <span class="n">BARRIER_FILE</span> <span class="o">=</span> <span class="s1">&#39;barriers.csv&#39;</span>
+
+    <span class="n">TARGETS</span> <span class="o">=</span> <span class="s1">&#39;static/targets&#39;</span>
+    <span class="n">TARGET_FILE</span> <span class="o">=</span> <span class="s1">&#39;targets.csv&#39;</span>
+
+    <span class="n">COLNAMES</span> <span class="o">=</span> <span class="s1">&#39;static/colnames&#39;</span>
+    <span class="n">COLNAME_FILE</span> <span class="o">=</span> <span class="s1">&#39;colnames.csv&#39;</span>
+
+    <span class="k">global</span> <span class="n">project_names</span><span class="p">,</span> <span class="n">region_names</span>
+
+    <span class="n">project_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">BARRIERS</span><span class="p">)</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()]</span>
+
+    <span class="n">region_names</span> <span class="o">=</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
+        <span class="n">barrier_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">BARRIERS</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span> <span class="o">/</span> <span class="n">BARRIER_FILE</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">barrier_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>     <span class="c1"># skip the header</span>
+            <span class="n">region_names</span><span class="p">[</span><span class="n">project</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">rec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">f</span> <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="read_csv_file"><code>read_csv_file</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Read a CSV file from one of the static subdirectories.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>project</code></b>
+              –
+              <div class="doc-md-description">
+                <p>the project name</p>
+              </div>
+            </li>
+            <li>
+              <b><code>area</code></b>
+              –
+              <div class="doc-md-description">
+                <p>the data area (barriers, targets, colnames)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>fn</code></b>
+              –
+              <div class="doc-md-description">
+                <p>the name of the file within the data area</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>the contents of the file, as a single string</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_csv_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Read a CSV file from one of the static subdirectories.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        project:  the project name</span>
+<span class="sd">        area:  the data area (barriers, targets, colnames)</span>
+<span class="sd">        fn:  the name of the file within the data area</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the contents of the file, as a single string</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">area</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span> <span class="o">/</span> <span class="n">fn</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="projects"><code>projects</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Respond to GET requests of the form <code>/projects</code>.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>a list of the names of the projects (datasets) managed by the server.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/projects&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">projects</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to GET requests of the form `/projects`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a list of the names of the projects (datasets) managed by the server.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">project_names</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="regions"><code>regions</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Respond to GET requests of the form <code>/regions/P</code> where P is a project name.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>a list of regions (river names) for a project, taken from the second column of the barrier file for the project.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/regions/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">regions</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to GET requests of the form `/regions/P` where P is a project name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a list of regions (river names) for a project, taken from the second column of the barrier file for the project.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;regions&#39;</span><span class="p">:</span> <span class="n">region_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">project</span><span class="p">)}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="barriers"><code>barriers</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Respond to GET requests of the form <code>/barriers/P</code> where P is a project name.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>the barrier data file for a project, as one long string.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/barriers/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">barriers</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to GET requests of the form `/barriers/P` where P is a project name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the barrier data file for a project, as one long string.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
+        <span class="n">barriers</span> <span class="o">=</span> <span class="n">read_csv_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">barriers</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;barriers&#39;</span><span class="p">:</span> <span class="n">barriers</span><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="targets"><code>targets</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Respond to GET requests of the form <code>/barriers/P</code> where P is a project name.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>the barrier data file for a project, as one long string.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/barriers/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">barriers</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to GET requests of the form `/barriers/P` where P is a project name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        the barrier data file for a project, as one long string.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
+        <span class="n">barriers</span> <span class="o">=</span> <span class="n">read_csv_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">barriers</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;barriers&#39;</span><span class="p">:</span> <span class="n">barriers</span><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="colnames"><code>colnames</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Respond to GET requests of the form <code>/colnames/P</code> where P is a project name.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>a dictionary with two entries, the name of the mapping and the names of the colname files</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/colnames/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">colnames</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to GET requests of the form `/colnames/P` where P is a project name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dictionary with two entries, the name of the mapping and the names of the colname files</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">cname_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">COLNAMES</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cname_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">cname_file</span> <span class="o">=</span> <span class="n">cname_dir</span> <span class="o">/</span> <span class="n">COLNAME_FILE</span>
+    <span class="k">if</span> <span class="n">cname_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">COLNAME_FILE</span><span class="p">]}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cname_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">alts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cname_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">alts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">alt_name</span> <span class="o">=</span> <span class="n">alts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">cnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.csv&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="n">cnames</span> <span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="optipass"><code>optipass</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>A GET request of the form <code>/optipass/P?ARGS</code> runs OptiPass using the parameter values passed in the URL.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>project</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>the name of the project (path to target and barrier files)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>regions</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>comma-separated string of region names</p>
+              </div>
+            </li>
+            <li>
+              <b><code>targets</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>comma-separated string of 2-letter target IDs</p>
+              </div>
+            </li>
+            <li>
+              <b><code>weights</code></b>
+                  (<code>str | None</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>comma-separated list of ints, one for each target (optional)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>bmin</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>first budget value</p>
+              </div>
+            </li>
+            <li>
+              <b><code>bcount</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>number of budgets (<em>i.e.</em> number of times to run OptiPass)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>bdelta</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>distance between budget values (<em>i.e.</em> step size)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>colnames</code></b>
+                  (<code>str | None</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>climate scenario, either <code>current</code> or <code>future</code> (optional)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>a dictionary with a status indicator and a token that can be used to fetch results.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/optipass/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">optipass</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">regions</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bmin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bcount</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bdelta</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">colnames</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A GET request of the form `/optipass/P?ARGS` runs OptiPass using the parameter values passed in the URL.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        project:  the name of the project (path to target and barrier files)</span>
+<span class="sd">        regions:  comma-separated string of region names</span>
+<span class="sd">        targets:  comma-separated string of 2-letter target IDs</span>
+<span class="sd">        weights:  comma-separated list of ints, one for each target (optional)</span>
+<span class="sd">        bmin:  first budget value</span>
+<span class="sd">        bcount:  number of budgets (_i.e._ number of times to run OptiPass)</span>
+<span class="sd">        bdelta:  distance between budget values (_i.e._ step size)</span>
+<span class="sd">        colnames:  climate scenario, either `current` or `future` (optional)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dictionary with a status indicator and a token that can be used to fetch results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;unknown project: </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">barrier_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">BARRIERS</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span> <span class="o">/</span> <span class="n">BARRIER_FILE</span>
+        <span class="n">target_file</span> <span class="o">=</span> <span class="n">target_file_name</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">climate</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">target_file</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;no targets in project &quot;</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&quot; for climate: &quot;</span><span class="si">{</span><span class="n">climate</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+        <span class="n">region_list</span> <span class="o">=</span> <span class="n">regions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">r</span> <span class="ow">in</span> <span class="n">region_names</span><span class="p">[</span><span class="n">project</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">region_list</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;unknown region in </span><span class="si">{</span><span class="n">regions</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">target_list</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">run_optipass</span><span class="p">(</span><span class="n">barrier_file</span><span class="p">,</span> <span class="n">target_file</span><span class="p">,</span> <span class="n">region_list</span><span class="p">,</span> <span class="n">target_list</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">bmin</span><span class="p">,</span> <span class="n">bcount</span><span class="p">,</span> <span class="n">bdelta</span><span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;ok&#39;</span>
+    <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;fail&#39;</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="tables"><code>tables</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Respond to a GET request of the form <code>/tables/T</code> where T is a token returned by an earlier call to <code>optipass</code>.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              –
+              <div class="doc-md-description">
+                <p>a dictionary with a status code and two output tables</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/tables/</span><span class="si">{token}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">tables</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to a GET request of the form `/tables/T` where T is a token returned by an earlier call to `optipass`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dictionary with a status code and two output tables</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">OUTPUTS</span><span class="p">)</span> <span class="o">/</span> <span class="n">token</span> <span class="o">/</span> <span class="s1">&#39;matrix.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">OUTPUTS</span><span class="p">)</span> <span class="o">/</span> <span class="n">token</span> <span class="o">/</span> <span class="s1">&#39;summary.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">summary</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;ok&#39;</span><span class="p">,</span> <span class="s1">&#39;matrix&#39;</span><span class="p">:</span> <span class="n">matrix</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="n">summary</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;fail&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;error reading results for </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../data/" class="btn btn-neutral float-left" title="Data"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tests/" class="btn btn-neutral float-right" title="Tests">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../data/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tests/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
