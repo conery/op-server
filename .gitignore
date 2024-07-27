@@ -164,5 +164,7 @@ cython_debug/
 # Files and folders specific to the op-server project
 bin/
 tmp/
-oregon/
 
+# Data from Oregon is on the development system but we don't want it included in the repo
+oregon/
+test/test_oregon.py

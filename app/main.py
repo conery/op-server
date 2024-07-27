@@ -11,7 +11,7 @@
 from fastapi import FastAPI, Response
 from pathlib import Path
 
-# from .optipass import run_optipass
+from .optipass import run_optipass
 
 app = FastAPI()
 
