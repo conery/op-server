@@ -79,3 +79,28 @@ def test_targets_demo():
     targets = { line.split(',')[0] for line in contents[1:] }
     assert targets == {'T1','T2'}
 
+def test_targets_unknown():
+    '''
+    Test the targets entry point with an unknown project name
+    '''
+    resp = client.get('/targets/foo')
+    dct = resp.json()
+    assert dct['project'] == 'foo'
+    assert dct['targets'] == None
+
+### Tests for the colnames entry point
+
+def test_colnames_demo():
+    resp = client.get('colnames/demo')
+    dct = resp.json()
+    assert 'name' in dct
+    assert dct['name'] is None
+    assert 'files' in dct
+    assert dct['files'] == ['colnames.csv']
+
+def test_colnames_unknown():
+    '''
+    Test the colnames entry point with an unknown project name
+    '''
+    resp = client.get('/colnames/foo')
+    assert resp.json() is None

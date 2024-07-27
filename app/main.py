@@ -140,6 +140,8 @@ async def colnames(project: str):
     '''
     Return a description of the column name mappings for a project.
     '''
+    if project not in project_names:
+        return None
     cname_dir = Path(COLNAMES) / project
     if not cname_dir.is_dir():
         return None
