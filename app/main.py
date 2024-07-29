@@ -13,82 +13,69 @@ from pathlib import Path
 
 from .optipass import run_optipass
 
-app = FastAPI()
+def init():
+    '''
+    Define global variables used in the rest of the application:
+    paths to static data and names of static data files, a list of 
+    names of projects, a dictionary of region names for each project.
+    '''
 
-###
-# Global variables.
-#
-# A project defines which data set to use.  Valid project names are the
-# names of subfolders under static/barriers.
-#
-# Region names are the names of rivers in a barrier file for a project.
-#
-# Target files have descriptions of restoration targets; the fields needed
-# here are the names of columns that have pre- and post-restoration passage
-# values
+    global BARRIERS, BARRIER_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE
 
-BARRIERS = 'static/barriers'
-BARRIER_FILE = 'barriers.csv'
+    BARRIERS = 'static/barriers'
+    BARRIER_FILE = 'barriers.csv'
 
-TARGETS = 'static/targets'
-TARGET_FILE = 'targets.csv'
+    TARGETS = 'static/targets'
+    TARGET_FILE = 'targets.csv'
 
-COLNAMES = 'static/colnames'
-COLNAME_FILE = 'colnames.csv'
+    COLNAMES = 'static/colnames'
+    COLNAME_FILE = 'colnames.csv'
 
-project_names = [p.stem for p in Path(BARRIERS).iterdir()]
+    global project_names, region_names
 
-region_names = { }
-for project in project_names:
-    barrier_file = Path(BARRIERS) / project / BARRIER_FILE
-    with open(barrier_file) as f:
-        f.readline()     # skip the header
-        region_names[project] = { rec.split(',')[1] for rec in f }
+    project_names = [p.stem for p in Path(BARRIERS).iterdir()]
 
-# target_files = { }
-# for project in project_names:
-#     target_dir = Path(TARGETS) / project
-#     target_files[project] = [ f.parts[-1] for f in target_dir.glob('*.csv') ]
+    region_names = { }
+    for project in project_names:
+        barrier_file = Path(BARRIERS) / project / BARRIER_FILE
+        with open(barrier_file) as f:
+            f.readline()     # skip the header
+            region_names[project] = { rec.split(',')[1] for rec in f }
 
-# MAPS = 'static/maps'
-
-# map_files = { }
-# for project in project_names:
-#     map_dir = Path(MAPS) / project
-#     map_files[project] = [ f.parts[-1] for f in map_dir.glob('*.csv') ]
-
-###
-# Utilities for reading data files for a project
-
-# def target_file_name(project, climate):
-#     if climate is None:
-#         return Path(TARGETS) / project / target_files[project][0]
-#     elif climate+'.csv' in target_files[project]:
-#         return Path(TARGETS) / project / climate+'.csv'
-#     else:
-#         return ''
-    
 def read_csv_file(project, area, fn):
+    '''
+    Read a CSV file from one of the static subdirectories.
+
+    Args:
+        project:  the project name
+        area:  the data area (barriers, targets, colnames)
+        fn:  the name of the file within the data area
+
+    Returns:
+        the contents of the file, as a single string
+    '''
     p = Path(area) / project / fn
     with open(p) as f:
         return f.read().rstrip()
     
-# def read_target_file(project, climate):
-#     if climate is None:
-#         targets = read_csv_file(project, TARGETS, target_files[project][0])
-#     elif climate+'.csv' in target_files[project]:
-#         targets = read_csv_file(project, TARGETS, climate+'.csv')
-#     else:
-#         targets = None
-#     return targets
+###
+#
+# Top level program -- initialize the global variables and start the app
+#
 
+init()
+app = FastAPI()
+    
 ###
 # Return a list of project names.
         
 @app.get("/projects")
 async def projects():
     '''
-    Return a list of project names (dataset) names.
+    Respond to GET requests of the form `/projects`.
+    
+    Returns:
+        a list of the names of the projects (datasets) managed by the server.
     '''
     return project_names
 
@@ -98,7 +85,10 @@ async def projects():
 @app.get("/regions/{project}")
 async def regions(project: str):
     '''
-    Return a list of regions (river names) for a project.
+    Respond to GET requests of the form `/regions/P` where P is a project name.
+
+    Returns:
+        a list of regions (river names) for a project, taken from the second column of the barrier file for the project.
     '''
     return {'project': project, 'regions': region_names.get(project)}
 
@@ -108,7 +98,10 @@ async def regions(project: str):
 @app.get("/barriers/{project}")
 async def barriers(project: str):
     '''
-    Return barrier data for a project.
+    Respond to GET requests of the form `/barriers/P` where P is a project name.
+
+    Returns:
+        the barrier data file for a project, as one long string.
     '''
     if project in project_names:
         barriers = read_csv_file(project, BARRIERS, BARRIER_FILE)
@@ -122,7 +115,10 @@ async def barriers(project: str):
 @app.get("/targets/{project}")
 async def targets(project: str):
     '''
-    Return restoration target descriptions for a project.
+    Respond to GET requests of the form `/targets/P` where P is a project name.
+
+    Returns:
+        the CSV file containing restoration target descriptions for a project
     '''
 
     if project in project_names:
@@ -138,7 +134,10 @@ async def targets(project: str):
 @app.get("/colnames/{project}")
 async def colnames(project: str):
     '''
-    Return a description of the column name mappings for a project.
+    Respond to GET requests of the form `/colnames/P` where P is a project name.
+
+    Returns:
+        a dictionary with two entries, the name of the mapping and the names of the colname files
     '''
     if project not in project_names:
         return None
@@ -157,26 +156,29 @@ async def colnames(project: str):
     if not alt_name.is_dir():
         return None
     cnames = [p.stem for p in alt_name.iterdir() if p.suffix == '.csv']
-    return { 'name': alt_name.name, 'files': cnames}
+    return { 'name': alt_name.name, 'files': cnames }
 
 ###
 # Run OptiPass.  Load the target and barrier data for the project, pass those
 # and other parameters to the function that runs OP.
 
 @app.get("/optipass/{project}")
-async def optipass(project: str, regions: str, targets: str, bmin: int, bcount: int, bdelta: int, climate: str | None = None, weights: str | None = None):
+async def optipass(project: str, regions: str, targets: str, bmin: int, bcount: int, bdelta: int, colnames: str | None = None, weights: str | None = None):
     '''
-    Run OptiPass for a set of budget values.  Parameters:
-    - **project**:  the name of the project (path to target and barrier files)
-    - **regions**:  comma-separated string of region names
-    - **targets**:  comma-separated string of 2-letter target IDs
-    - **weights**:  comma-separated list of ints, one for each target (optional)
-    - **bmin**:  first budget value
-    - **bcount**:  number of budgets (_i.e._ number of times to run OptiPass)
-    - **bdelta**:  distance between budget values (_i.e._ step size)
-    - **climate**:  climate scenario, either `current` or `future` (optional)
+    A GET request of the form `/optipass/P?ARGS` runs OptiPass using the parameter values passed in the URL.
+    
+    Args:
+        project:  the name of the project (path to target and barrier files)
+        regions:  comma-separated string of region names
+        targets:  comma-separated string of 2-letter target IDs
+        weights:  comma-separated list of ints, one for each target (optional)
+        bmin:  first budget value
+        bcount:  number of budgets (_i.e._ number of times to run OptiPass)
+        bdelta:  distance between budget values (_i.e._ step size)
+        colnames:  climate scenario, either `current` or `future` (optional)
 
-    Returns a token that can be used to fetch results (output tables and plots).
+    Returns:
+        a dictionary with a status indicator and a token that can be used to fetch results.
     '''
 
     try:
@@ -204,7 +206,12 @@ OUTPUTS = 'tmp'
 
 @app.get("/tables/{token}")
 async def tables(token: str):
-    '''Return output tables from a previous run'''
+    '''
+    Respond to a GET request of the form `/tables/T` where T is a token returned by an earlier call to `optipass`.
+
+    Returns:
+        a dictionary with a status code and two output tables
+    '''
 
     try:
         with open(Path(OUTPUTS) / token / 'matrix.txt') as f:
@@ -216,3 +223,4 @@ async def tables(token: str):
         result = {'status': 'fail', 'message': f'error reading results for {token}: {str(err)}'}
 
     return result
+
