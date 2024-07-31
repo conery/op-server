@@ -168,3 +168,4 @@ tmp/
 # Data from Oregon is on the development system but we don't want it included in the repo
 oregon/
 test/test_oregon.py
+*.numbers

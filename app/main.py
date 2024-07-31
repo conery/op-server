@@ -1,12 +1,12 @@
 #
-# Web application for the Tide Gate Optimization Tool
+# REST server for OptiPass
 #
 # John Conery
 # University of Oregon
 # (conery@uoregon.edu)
 #
-# The top level file defines paths to static pages, the web app (implemented
-# in Panel), and web services that provide data files and run the optimizer.
+# The top level file defines paths to static pages and RESTful 
+# web services that provide data files and run the optimizer.
 
 from fastapi import FastAPI, Response
 from pathlib import Path
