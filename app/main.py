@@ -20,10 +20,11 @@ def init():
     names of projects, a dictionary of region names for each project.
     '''
 
-    global BARRIERS, BARRIER_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE
+    global BARRIERS, BARRIER_FILE, MAPINFO_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE
 
     BARRIERS = 'static/barriers'
     BARRIER_FILE = 'barriers.csv'
+    MAPINFO_FILE = 'mapinfo.json'
 
     TARGETS = 'static/targets'
     TARGET_FILE = 'targets.csv'
@@ -41,10 +42,9 @@ def init():
         with open(barrier_file) as f:
             f.readline()     # skip the header
             region_names[project] = { rec.split(',')[1] for rec in f }
-
-def read_csv_file(project, area, fn):
+def read_text_file(project, area, fn):
     '''
-    Read a CSV file from one of the static subdirectories.
+    Read a text file from one of the static subdirectories.
 
     Args:
         project:  the project name
@@ -104,10 +104,27 @@ async def barriers(project: str):
         the barrier data file for a project, as one long string.
     '''
     if project in project_names:
-        barriers = read_csv_file(project, BARRIERS, BARRIER_FILE)
+        barriers = read_text_file(project, BARRIERS, BARRIER_FILE)
     else:
         barriers = None
     return {'project': project, 'barriers': barriers}
+
+###
+# Return the settings for displaying a map for a project.
+
+@app.get("/mapinfo/{project}")
+async def mapinfo(project: str):
+    '''
+    Respond to GET requests of the form `/mapinfo/P` where P is a project name.
+
+    Returns:
+        a dictionary (JSON format) with settings for displaying the map for a project.
+    '''
+    if project in project_names:
+        info = read_text_file(project, BARRIERS, MAPINFO_FILE)
+    else:
+        info = None
+    return {'project': project, 'mapinfo': info}
 
 ###
 # Return the restoration target descriptions
@@ -122,7 +139,7 @@ async def targets(project: str):
     '''
 
     if project in project_names:
-        targets = read_csv_file(project, TARGETS, TARGET_FILE)
+        targets = read_text_file(project, TARGETS, TARGET_FILE)
     else:
         targets = None
     return {'project': project, 'targets': targets}
