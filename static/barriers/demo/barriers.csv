@@ -1,7 +1,7 @@
 ID,region,DSID,name,cost,X,Y,NPROJ,comment
-A,White Knife,NA,,250,,,1,
-B,White Knife,A,,120,,,1,
-C,White Knife,B,,70,,,1,
-D,North Fork,A,,NA,,,0,
-E,North Fork,D,,100,,,1,
-F,North Fork,D,,50,,,1,
+A,Red Fork,NA,,250,,,1,
+B,Red Fork,A,,120,,,1,
+C,Red Fork,B,,70,,,1,
+D,Blue Fork,A,,NA,,,0,
+E,Blue Fork,D,,100,,,1,
+F,Blue Fork,D,,50,,,1,
