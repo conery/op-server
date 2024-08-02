@@ -8,7 +8,8 @@
 # The top level file defines paths to static pages and RESTful 
 # web services that provide data files and run the optimizer.
 
-from fastapi import FastAPI, Response
+from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from pathlib import Path
 
 from .optipass import run_optipass
@@ -42,6 +43,7 @@ def init():
         with open(barrier_file) as f:
             f.readline()     # skip the header
             region_names[project] = { rec.split(',')[1] for rec in f }
+
 def read_text_file(project, area, fn):
     '''
     Read a text file from one of the static subdirectories.
@@ -125,6 +127,14 @@ async def mapinfo(project: str):
     else:
         info = None
     return {'project': project, 'mapinfo': info}
+
+###
+# Return an image in the static directory
+
+@app.get("/image/{filename}")
+async def image(filename: str):
+    p = Path('static') / 'images' / filename
+    return FileResponse(p)
 
 ###
 # Return the restoration target descriptions
