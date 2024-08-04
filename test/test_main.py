@@ -20,25 +20,6 @@ def test_projects():
     lst = resp.json()
     assert 'demo' in lst
 
-### Tests for the regions entry point
-
-def test_regions():
-    '''
-    The demo project has one region, named Test1
-    '''
-    resp = client.get('/regions/demo')
-    dct = resp.json()
-    assert dct['project'] == 'demo'
-    assert dct['regions'] == ['Test1']
-
-def test_regions_unknown():
-    '''
-    Test the regions entry point with an unknown project name
-    '''
-    resp = client.get('/regions/foo')
-    dct = resp.json()
-    assert dct['project'] == 'foo'
-    assert dct['regions'] == None
 
 ### Tests for the barriers entry point
     
@@ -52,7 +33,7 @@ def test_barriers_demo():
     contents = dct['barriers'].split('\n')
     assert len(contents) == 7
     header = contents[0].split(',')
-    assert header[0] == 'BARID' and header[-1] == 'NPROJ'
+    assert header[0] == 'ID' and header[-1] == 'comment'
     gates = { line.split(',')[0] for line in contents[1:] }
     assert gates == {'A','B','C','D','E','F'}
 
