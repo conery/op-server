@@ -82,19 +82,6 @@ async def projects():
     return project_names
 
 ###
-# Return a list of regions for a project.
-        
-@app.get("/regions/{project}")
-async def regions(project: str):
-    '''
-    Respond to GET requests of the form `/regions/P` where P is a project name.
-
-    Returns:
-        a list of regions (river names) for a project, taken from the second column of the barrier file for the project.
-    '''
-    return {'project': project, 'regions': region_names.get(project)}
-
-###
 # Return the barrier file for a project.
 
 @app.get("/barriers/{project}")
