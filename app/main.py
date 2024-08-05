@@ -21,10 +21,12 @@ def init():
     names of projects, a dictionary of region names for each project.
     '''
 
-    global BARRIERS, BARRIER_FILE, MAPINFO_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE
+    global BARRIERS, BARRIER_FILE, MAPS, MAPINFO_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE
 
     BARRIERS = 'static/barriers'
     BARRIER_FILE = 'barriers.csv'
+
+    MAPS = 'static/maps'
     MAPINFO_FILE = 'mapinfo.json'
 
     TARGETS = 'static/targets'
@@ -110,17 +112,17 @@ async def mapinfo(project: str):
         a dictionary (JSON format) with settings for displaying the map for a project.
     '''
     if project in project_names:
-        info = read_text_file(project, BARRIERS, MAPINFO_FILE)
+        info = read_text_file(project, MAPS, MAPINFO_FILE)
     else:
         info = None
     return {'project': project, 'mapinfo': info}
 
 ###
-# Return an image in the static directory
+# Return a static map (image file) for a project
 
-@app.get("/image/{filename}")
-async def image(filename: str):
-    p = Path('static') / 'images' / filename
+@app.get("/map/{project}/{filename}")
+async def map(project: str, filename: str):
+    p = Path(MAPS) / project / filename
     return FileResponse(p)
 
 ###

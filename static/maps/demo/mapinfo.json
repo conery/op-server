@@ -1,0 +1,6 @@
+{
+    "map_type": "StaticMap",
+    "map_file": "Riverlands.png",
+    "map_title": "The Riverlands",
+    "map_tools": ["hover"]
+}
