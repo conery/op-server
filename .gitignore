@@ -172,4 +172,3 @@ test/test_oregon.py
 # Other files and directories from the development system
 sandbox/
 *.numbers
-*.graffle
