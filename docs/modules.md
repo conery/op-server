@@ -9,7 +9,7 @@ app
 ```
 ## `main.py`
 
-#### Initialization
+### Initialization
 
 ::: app.main.init
     options:
@@ -21,9 +21,9 @@ app
       filters: ""
       members_order: source
 
-### `read_csv_file`
+### `read_text_file`
 
-::: app.main.read_csv_file
+::: app.main.read_text_file
     options:
       show_root_toc_entry: false
       docstring_options:
@@ -45,18 +45,6 @@ app
       filters: ""
       members_order: source
 
-### `regions`
-
-::: app.main.regions
-    options:
-      show_root_toc_entry: false
-      docstring_options:
-        ignore_init_summary: true
-      merge_init_into_class: true
-      heading_level: 3
-      filters: ""
-      members_order: source
-
 ### `barriers`
 
 ::: app.main.barriers
@@ -69,9 +57,21 @@ app
       filters: ""
       members_order: source
 
+### `mapinfo`
+
+::: app.main.mapinfo
+    options:
+      show_root_toc_entry: false
+      docstring_options:
+        ignore_init_summary: true
+      merge_init_into_class: true
+      heading_level: 3
+      filters: ""
+      members_order: source
+
 ### `targets`
 
-::: app.main.barriers
+::: app.main.targets
     options:
       show_root_toc_entry: false
       docstring_options:
