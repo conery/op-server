@@ -21,19 +21,22 @@ def init():
     names of projects, a dictionary of region names for each project.
     '''
 
-    global BARRIERS, BARRIER_FILE, MAPS, MAPINFO_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE
-
-    BARRIERS = 'static/barriers'
-    BARRIER_FILE = 'barriers.csv'
+    global BARRIERS, BARRIER_FILE, MAPS, MAPINFO_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE, TMPDIR
 
     MAPS = 'static/maps'
     MAPINFO_FILE = 'mapinfo.json'
+
+    BARRIERS = 'static/barriers'
+    BARRIER_FILE = 'barriers.csv'
 
     TARGETS = 'static/targets'
     TARGET_FILE = 'targets.csv'
 
     COLNAMES = 'static/colnames'
     COLNAME_FILE = 'colnames.csv'
+
+    # Set to False to save outputs in project folder
+    TMPDIR = False
 
     global project_names, region_names
 
@@ -184,14 +187,14 @@ async def optipass(project: str, regions: str, targets: str, bmin: int, bcount: 
     A GET request of the form `/optipass/P?ARGS` runs OptiPass using the parameter values passed in the URL.
     
     Args:
-        project:  the name of the project (path to target and barrier files)
+        project:  the name of the project (used to make path to static files)
         regions:  comma-separated string of region names
         targets:  comma-separated string of 2-letter target IDs
-        weights:  comma-separated list of ints, one for each target (optional)
         bmin:  first budget value
         bcount:  number of budgets (_i.e._ number of times to run OptiPass)
         bdelta:  distance between budget values (_i.e._ step size)
-        colnames:  climate scenario, either `current` or `future` (optional)
+        weights:  comma-separated list of ints, one for each target (optional)
+        colnames:  project-specific target scenario, e.g. `current` or `future` (optional)
 
     Returns:
         a dictionary with a status indicator and a token that can be used to fetch results.
@@ -199,13 +202,23 @@ async def optipass(project: str, regions: str, targets: str, bmin: int, bcount: 
 
     try:
         assert project in project_names, f'unknown project: {project}'
-        barrier_file = Path(BARRIERS) / project / BARRIER_FILE
-        target_file = target_file_name(project, climate)
-        assert target_file, f'no targets in project "{project}" for climate: "{climate}"'
+        barrier_data_file = Path(BARRIERS) / project / BARRIER_FILE
+        target_data_file = Path(TARGETS) / project / TARGET_FILE
         region_list = regions.split(',')
-        assert all(r in region_names[project] for r in region_list), f'unknown region in {regions}'
         target_list = targets.split(',')
-        token = run_optipass(barrier_file, target_file, region_list, target_list, weights, bmin, bcount, bdelta)
+        weight_list = weights.split(',') if weights else []
+
+        token = run_optipass(
+            barrier_data_file, 
+            target_data_file, 
+            region_list, 
+            target_list, 
+            weight_list, 
+            bmin, 
+            bcount, 
+            bdelta,
+        )
+
         status = 'ok'
     except AssertionError as err:
         status = 'fail'

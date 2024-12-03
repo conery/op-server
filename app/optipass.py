@@ -71,7 +71,7 @@ class OptiPass:
         Instantiate a new OP object, creating the temp directory where OP will save
         results (unless tmpdir is False).
         '''
-        self.tempdir = tempfile.mkdtemp(prefix='op', dir='tmp') if tmpdir else None
+        self.tempdir = tempfile.mkdtemp(prefix='op', dir='tmp') if tmpdir else 'tmp'
 
         bf = pd.read_csv(bfile)
         self.barriers = bf[bf.REGION.isin(rlist)]
