@@ -42,9 +42,7 @@ def test_barriers_unknown():
     Test the barriers entry point with an unknown project name
     '''
     resp = client.get('/barriers/foo')
-    dct = resp.json()
-    assert dct['project'] == 'foo'
-    assert dct['barriers'] == None
+    assert resp.status_code == 404
 
 ### Tests for the targets entry point
     
@@ -59,15 +57,15 @@ def test_targets_demo():
     assert header[0] == 'abbrev' and header[-1] == 'infra'
     targets = { line.split(',')[0] for line in contents[1:] }
     assert targets == {'T1','T2'}
+    layout = dct['layout']
+    assert layout == 'T1 T2'
 
 def test_targets_unknown():
     '''
     Test the targets entry point with an unknown project name
     '''
     resp = client.get('/targets/foo')
-    dct = resp.json()
-    assert dct['project'] == 'foo'
-    assert dct['targets'] == None
+    assert resp.status_code == 404
 
 ### Tests for the colnames entry point
 
@@ -84,4 +82,4 @@ def test_colnames_unknown():
     Test the colnames entry point with an unknown project name
     '''
     resp = client.get('/colnames/foo')
-    assert resp.json() is None
+    assert resp.status_code == 404

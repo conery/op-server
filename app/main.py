@@ -8,9 +8,12 @@
 # The top level file defines paths to static pages and RESTful 
 # web services that provide data files and run the optimizer.
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
+
+import logging
+from rich.logging import RichHandler
 
 from .optipass import run_optipass
 
@@ -21,7 +24,7 @@ def init():
     names of projects, a dictionary of region names for each project.
     '''
 
-    global BARRIERS, BARRIER_FILE, MAPS, MAPINFO_FILE, TARGETS, TARGET_FILE, COLNAMES, COLNAME_FILE, TMPDIR
+    global BARRIERS, BARRIER_FILE, MAPS, MAPINFO_FILE, TARGETS, TARGET_FILE, LAYOUT_FILE, COLNAMES, COLNAME_FILE, TMPDIR
 
     MAPS = 'static/maps'
     MAPINFO_FILE = 'mapinfo.json'
@@ -31,6 +34,7 @@ def init():
 
     TARGETS = 'static/targets'
     TARGET_FILE = 'targets.csv'
+    LAYOUT_FILE = 'layout.txt'
 
     COLNAMES = 'static/colnames'
     COLNAME_FILE = 'colnames.csv'
@@ -40,7 +44,15 @@ def init():
 
     global project_names, region_names
 
+    logging.basicConfig(
+        level=logging.INFO,
+        style='{',
+        format='{relativeCreated:4.0f} msec: {message}',
+        handlers = [RichHandler(markup=True, rich_tracebacks=True)],
+    )
+
     project_names = [p.stem for p in Path(BARRIERS).iterdir()]
+    logging.info(f'projects: {project_names}')
 
     region_names = { }
     for project in project_names:
@@ -48,6 +60,7 @@ def init():
         with open(barrier_file) as f:
             f.readline()     # skip the header
             region_names[project] = { rec.split(',')[1] for rec in f }
+    logging.info(f'regions: {region_names}')
 
 def read_text_file(project, area, fn):
     '''
@@ -62,8 +75,12 @@ def read_text_file(project, area, fn):
         the contents of the file, as a single string
     '''
     p = Path(area) / project / fn
-    with open(p) as f:
-        return f.read().rstrip()
+    logging.info(f'reading text file: {p}')
+    try:
+        with open(p) as f:
+            return f.read().rstrip()
+    except Exception as err:
+        raise HTTPException(status_code=404, detail=f'error reading {p}')
     
 ###
 #
@@ -99,9 +116,9 @@ async def barriers(project: str):
     '''
     if project in project_names:
         barriers = read_text_file(project, BARRIERS, BARRIER_FILE)
+        return {'project': project, 'barriers': barriers}
     else:
-        barriers = None
-    return {'project': project, 'barriers': barriers}
+        raise HTTPException(status_code=404, detail=f'barriers: unknown project: {project}')
 
 ###
 # Return the settings for displaying a map for a project.
@@ -116,9 +133,10 @@ async def mapinfo(project: str):
     '''
     if project in project_names:
         info = read_text_file(project, MAPS, MAPINFO_FILE)
+        return {'project': project, 'mapinfo': info}
     else:
-        info = None
-    return {'project': project, 'mapinfo': info}
+        raise HTTPException(status_code=404, detail=f'mapinfo: unknown project: {project}')
+
 
 ###
 # Return a static map (image file) for a project
@@ -138,13 +156,15 @@ async def targets(project: str):
 
     Returns:
         the CSV file containing restoration target descriptions for a project
+        and a plain text file containing the layout in the GUI
     '''
 
     if project in project_names:
         targets = read_text_file(project, TARGETS, TARGET_FILE)
+        layout = read_text_file(project, TARGETS, LAYOUT_FILE)
+        return {'project': project, 'targets': targets, 'layout': layout}
     else:
-        targets = None
-    return {'project': project, 'targets': targets}
+        raise HTTPException(status_code=404, detail=f'targets: unknown project: {project}')
 
 ###
 # Return a description of the mappings for a project -- either a single file
@@ -158,24 +178,24 @@ async def colnames(project: str):
     Returns:
         a dictionary with two entries, the name of the mapping and the names of the colname files
     '''
-    if project not in project_names:
-        return None
-    cname_dir = Path(COLNAMES) / project
-    if not cname_dir.is_dir():
-        return None
-    cname_file = cname_dir / COLNAME_FILE
-    if cname_file.is_file():
-        return { 'name': None, 'files': [COLNAME_FILE]}
-    if not cname_dir.is_dir():
-        return None
-    alts = list(cname_dir.iterdir())
-    if len(alts) != 1:
-        return None
-    alt_name = alts[0]
-    if not alt_name.is_dir():
-        return None
-    cnames = [p.stem for p in alt_name.iterdir() if p.suffix == '.csv']
-    return { 'name': alt_name.name, 'files': cnames }
+    try:
+        assert project in project_names, f'unknown project: {project}'
+        cname_dir = Path(COLNAMES) / project
+        cname_file = cname_dir / COLNAME_FILE
+        if cname_file.is_file():
+            return { 'name': None, 'files': [COLNAME_FILE]}
+        elif cname_dir.is_dir():
+            alts = list(cname_dir.iterdir())
+            assert len(alts) == 1, f'colnames/{project} should have exactly one folder'
+            alt_name = alts[0]
+            assert alt_name.is_dir(), f'no directory for {alt_name}'
+            cnames = [p.stem for p in alt_name.iterdir() if p.suffix == '.csv']
+            return { 'name': alt_name.name, 'files': cnames }
+        else:
+            assert False, f'file not found: {cname_file}'
+    except Exception as err:
+        raise HTTPException(status_code=404, detail=f'colnames: {err}')
+
 
 ###
 # Run OptiPass.  Load the target and barrier data for the project, pass those
@@ -222,7 +242,11 @@ async def optipass(project: str, regions: str, targets: str, bmin: int, bcount: 
         status = 'ok'
     except AssertionError as err:
         status = 'fail'
-        token = str(err)
+        token = f'op-server error: {err}'
+    except Exception as err:
+        logging.exception(err)
+        status = 'fail'
+        token = f'python error: {err}'
 
     return {'status': status, 'token': token}
 

@@ -128,6 +128,7 @@ requests==2.31.0
 responses==0.25.3
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
+rich==13.9.4
 rpds-py==0.18.0
 Send2Trash==1.8.2
 six==1.16.0
