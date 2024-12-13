@@ -8,9 +8,10 @@
 # The top level file defines paths to static pages and RESTful 
 # web services that provide data files and run the optimizer.
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Query, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
+from typing import Annotated
 
 import logging
 from rich.logging import RichHandler
@@ -47,7 +48,7 @@ def init():
     logging.basicConfig(
         level=logging.INFO,
         style='{',
-        format='{relativeCreated:4.0f} msec: {message}',
+        format='{message}',
         handlers = [RichHandler(markup=True, rich_tracebacks=True)],
     )
 
@@ -202,43 +203,52 @@ async def colnames(project: str):
 # and other parameters to the function that runs OP.
 
 @app.get("/optipass/{project}")
-async def optipass(project: str, regions: str, targets: str, bmin: int, bcount: int, bdelta: int, colnames: str | None = None, weights: str | None = None):
+async def optipass(
+    project: str, 
+    regions: Annotated[list[str], Query()], 
+    budgets: Annotated[list[int], Query()],
+    targets: Annotated[list[str], Query()], 
+    weights: Annotated[list[str] | None, Query()] = None, 
+    mapping: str | None = None,
+):
     '''
-    A GET request of the form `/optipass/P?ARGS` runs OptiPass using the parameter values passed in the URL.
+    A GET request of the form `/optipass/project?ARGS` runs OptiPass using the parameter 
+    values passed in the URL.
     
     Args:
         project:  the name of the project (used to make path to static files)
         regions:  comma-separated string of region names
         targets:  comma-separated string of 2-letter target IDs
-        bmin:  first budget value
-        bcount:  number of budgets (_i.e._ number of times to run OptiPass)
-        bdelta:  distance between budget values (_i.e._ step size)
-        weights:  comma-separated list of ints, one for each target (optional)
-        colnames:  project-specific target scenario, e.g. `current` or `future` (optional)
+        budgets:  a list with starting budget, increment, and count
+        weights:  list of ints, one for each target (optional)
+        mapping:  project-specific target scenario, e.g. `current` or `future` (optional)
 
     Returns:
         a dictionary with a status indicator and a token that can be used to fetch results.
     '''
-
     try:
-        assert project in project_names, f'unknown project: {project}'
-        barrier_data_file = Path(BARRIERS) / project / BARRIER_FILE
-        target_data_file = Path(TARGETS) / project / TARGET_FILE
-        region_list = regions.split(',')
-        target_list = targets.split(',')
-        weight_list = weights.split(',') if weights else []
+        # assert project in project_names, f'unknown project: {project}'
+        # barrier_data_file = Path(BARRIERS) / project / BARRIER_FILE
+        # target_data_file = Path(TARGETS) / project / TARGET_FILE
+        # logging.info(f'optipass {regions} {targets} {budgets} {weights} {mapping}')
+        logging.info(f'project {project}')
+        logging.info(f'regions {regions}')
+        logging.info(f'budgets {budgets}')
+        logging.info(f'targets {targets}')
+        logging.info(f'weights {weights}')
+        logging.info(f'mapping {mapping}')
 
-        token = run_optipass(
-            barrier_data_file, 
-            target_data_file, 
-            region_list, 
-            target_list, 
-            weight_list, 
-            bmin, 
-            bcount, 
-            bdelta,
-        )
-
+        # token = run_optipass(
+        #     barrier_data_file, 
+        #     target_data_file, 
+        #     region_list, 
+        #     target_list, 
+        #     weight_list, 
+        #     bmin, 
+        #     bcount, 
+        #     bdelta,
+        # )
+        token = 'xxx'
         status = 'ok'
     except AssertionError as err:
         status = 'fail'
