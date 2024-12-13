@@ -21,26 +21,36 @@ def optipass_is_installed():
     '''
     return Path('./bin/OptiPassMain.exe') and ((platform.system() == 'Windows') or os.environ.get('WINEARCH'))
 
-def run_optipass(barrier_file, target_file, regions, targets, weights, bmin, bcount, bdelta):
+def run_optipass(
+        barrier_path: str, 
+        target_file: str,
+        mapping_file: str, 
+        regions: list[str],
+        budgets: list[int],
+        targets: list[str], 
+        weights: list[int],
+    ):
     '''
-    Run OptiPass using the specified arguments.
+    Run OptiPass using the specified arguments.  Instantiates an OP object
+    with paths to data files, calls methods that create the input file,
+    run the optimizer, and gather the results.
 
-    Args:
-        barrier_file: name of a CSV file with all tide gates in a project
+    Arguments:
+        barrier_path: name of directory with CSVs files for tide gate data
         target_file: name of a CSV file with restoration target descriptions
+        mapping_file: name of CSV file with barrier passabilities
         regions: a list of geographic regions (river names) to use
+        budgets: a list with starting budget, budget increment, and number of budgets
         targets: a list of IDs of targets to use
         weights: a list of target weights
-        bmin: starting budget level
-        bcount: number of budgets to run
-        bdelta: increment between successive budget levels
 
     Returns:
-        a token to pass to the entry point that returns output tables
+        a token that can be used to retrieve results
     '''
-    op = OptiPass(barrier_file, target_file, regions, targets, weights)
+    op = OptiPass(barrier_path, target_file, mapping_file, regions, targets, weights)
     op.create_input_frame()
-    op.run(bmin, bcount, bdelta)
+    op.create_paths()
+    op.run(budgets)
     op.collect_results()
     op.save_results()
 
@@ -57,6 +67,7 @@ class OptiPass:
       values for the regions, targets, and budget levels
     * call a method to generate the input file (called a "barrier file" in the
       OP documentation) that will be read as input each time OP runs
+    * call the method that finds downstream barriers
     * call the method that runs OP
     * collect the results from the output files
     * compute the estimated benefits at each budget level
@@ -66,23 +77,39 @@ class OptiPass:
     of the object.
     '''
 
-    def __init__(self, bfile, tfile, rlist, tlist, weights=None, tmpdir=True):
+    def __init__(self, barriers, tfile, mfile, rlist, tlist, weights=None, tmpdir=True):
         '''
         Instantiate a new OP object, creating the temp directory where OP will save
         results (unless tmpdir is False).
+
+        Arguments:
+          barriers: folder with barrier definitions
+          tfile: name of file with target descriptions
+          mfile: name of file with target benefits
+          rlist: list of region names
+          tlist: list of target names
+          weights:  list of target weights (optional)
+          tmpdir:  path to output files (optional, used by unit tests)
         '''
         self.tempdir = tempfile.mkdtemp(prefix='op', dir='tmp') if tmpdir else 'tmp'
 
-        bf = pd.read_csv(bfile)
-        self.barriers = bf[bf.REGION.isin(rlist)]
-        self.barriers.index = list(range(len(self.barriers)))
+        bf = pd.read_csv(barriers/'barriers.csv')
+        self.barriers = bf[bf.region.isin(rlist)]
+
+        pf = pd.read_csv(barriers/'passability.csv')
+        self.passability = pf[pf.ID.isin(self.barriers.ID)]
 
         tf = pd.read_csv(tfile).set_index('abbrev')
         assert all(t in tf.index for t in tlist), f'unknown target name in {tlist}'
         self.targets = tf[tf.index.isin(tlist)]
-        self.set_target_weights(weights)
 
+        mf = pd.read_csv(mfile).set_index('abbrev')
+        self.mapping = mf[mf.index.isin(tlist)]
+
+        self.set_target_weights(weights)
+       
         self.input_frame = None
+        self.paths = None
         self.summary = None
         self.matrix = None
 
@@ -93,12 +120,12 @@ class OptiPass:
         names defined in the targets frame.
         '''
 
-        # Initialize the output frame (df) with the BARID and REGION columns 
+        # Initialize the output frame (df) with the ID and region columns 
         # from the data set 
-        df = self.barriers[['BARID','REGION']]
+        df = self.barriers[['ID','region']]
         header = ['ID','REG']
 
-        # The FOCUS column as all 1's
+        # The FOCUS column is all 1's
         df = pd.concat([df, pd.Series(np.ones(len(self.barriers)), name='FOCUS', dtype=int)], axis=1)
         header.append('FOCUS')
 
@@ -107,15 +134,17 @@ class OptiPass:
         header.append('DSID')
 
         # Add habitat column for each target.  The name of the column to copy is
-        # in the target frame
-        for row in self.targets.itertuples():
-            df = pd.concat([df, self.barriers[row.habitat]], axis=1)
-            header.append('HAB_'+row.Index)
+        # in the mapping frame, the column to copy is in the passability frame
+        for t in self.targets.index:
+            col = self.passability[self.mapping.loc[t,'habitat']]
+            df = pd.concat([df,col], axis=1)
+            header.append('HAB_'+t)
 
         # Same, but for pre-mitigation passage values
-        for row in self.targets.itertuples():
-            df = pd.concat([df, self.barriers[row.prepass]], axis=1)
-            header.append('PRE_'+row.Index)
+        for t in self.targets.index:
+            col = self.passability[self.mapping.loc[t,'prepass']]
+            df = pd.concat([df,col], axis=1)
+            header.append('PRE_'+t)
 
         # Copy the NPROJ column (1 if a gate is used, 0 if not)
         df = pd.concat([df, self.barriers['NPROJ']], axis=1)
@@ -126,20 +155,25 @@ class OptiPass:
         header.append('ACTION')
 
         # Copy the cost to fix a gate
-        df = pd.concat([df, self.barriers['COST']], axis=1)
+        df = pd.concat([df, self.barriers['cost']], axis=1)
         header += ['COST']
 
         # Same logic as above, copy the post-mitigation passage for each target
-        for row in self.targets.itertuples():
-            df = pd.concat([df, self.barriers[row.postpass]], axis=1)
-            header.append('POST_'+row.Index)
+        for t in self.targets.index:
+            col = self.passability[self.mapping.loc[t,'postpass']]
+            df = pd.concat([df,col], axis=1)
+            header.append('POST_'+t)
 
         # All done making the data -- use the new column headers and save the frame
         df.columns = header
         self.input_frame = df
 
-        # Last step -- create paths downstream from each gate (the paths will be 
-        # used to compute cumulative passability)
+    def create_paths(self):
+        '''
+        Create paths downstream from each gate (the paths will be 
+        used to compute cumulative passability)
+        '''
+        df = self.input_frame
 
         G = nx.from_pandas_edgelist(
             df[df.DSID.notnull()], 
@@ -147,6 +181,7 @@ class OptiPass:
             target='DSID', 
             create_using=nx.DiGraph
         )
+
         for x in df[df.DSID.isnull()].ID:
             G.add_node(x)
         self.paths = { n: self._path_from(n,G) for n in G.nodes }
@@ -164,7 +199,7 @@ class OptiPass:
         OptiPass is run
         '''
         if weights:
-            self.weights = [int(s) for s in weights]
+            self.weights = weights
             self.weighted = True
         else:
             self.weights = [1] * len(self.targets)

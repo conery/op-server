@@ -208,8 +208,8 @@ async def optipass(
     regions: Annotated[list[str], Query()], 
     budgets: Annotated[list[int], Query()],
     targets: Annotated[list[str], Query()], 
-    weights: Annotated[list[str] | None, Query()] = None, 
-    mapping: str | None = None,
+    weights: Annotated[list[int] | None, Query()] = None, 
+    mapping: Annotated[list[str] | None, Query()] = None,
 ):
     '''
     A GET request of the form `/optipass/project?ARGS` runs OptiPass using the parameter 
@@ -221,42 +221,47 @@ async def optipass(
         targets:  comma-separated string of 2-letter target IDs
         budgets:  a list with starting budget, increment, and count
         weights:  list of ints, one for each target (optional)
-        mapping:  project-specific target scenario, e.g. `current` or `future` (optional)
+        mapping:  project-specific target names, e.g. `current` or `future` (optional)
 
     Returns:
         a dictionary with a status indicator and a token that can be used to fetch results.
     '''
-    try:
-        # assert project in project_names, f'unknown project: {project}'
-        # barrier_data_file = Path(BARRIERS) / project / BARRIER_FILE
-        # target_data_file = Path(TARGETS) / project / TARGET_FILE
-        # logging.info(f'optipass {regions} {targets} {budgets} {weights} {mapping}')
-        logging.info(f'project {project}')
-        logging.info(f'regions {regions}')
-        logging.info(f'budgets {budgets}')
-        logging.info(f'targets {targets}')
-        logging.info(f'weights {weights}')
-        logging.info(f'mapping {mapping}')
+    logging.debug(f'project {project}')
+    logging.debug(f'regions {regions}')
+    logging.debug(f'budgets {budgets}')
+    logging.debug(f'targets {targets}')
+    logging.debug(f'weights {weights}')
+    logging.debug(f'mapping {mapping}')
 
-        # token = run_optipass(
-        #     barrier_data_file, 
-        #     target_data_file, 
-        #     region_list, 
-        #     target_list, 
-        #     weight_list, 
-        #     bmin, 
-        #     bcount, 
-        #     bdelta,
-        # )
-        token = 'xxx'
+    try:
+        assert project in project_names, f'unknown project: {project}'
+
+        barrier_path = Path(BARRIERS) / project
+        target_file = Path(TARGETS) / project / TARGET_FILE
+
+        cname_dir = Path(COLNAMES) / project
+        if mapping is None:
+            cname_file = cname_dir / COLNAME_FILE
+        else:
+            cname_file = cname_dir / mapping[0] / mapping[1]
+ 
+        token = run_optipass(
+            barrier_path, 
+            target_file,
+            cname_file,
+            regions,
+            budgets,
+            targets, 
+            weights,
+        )
         status = 'ok'
     except AssertionError as err:
-        status = 'fail'
         token = f'op-server error: {err}'
+        status = 'fail'
     except Exception as err:
         logging.exception(err)
-        status = 'fail'
         token = f'python error: {err}'
+        status = 'fail'
 
     return {'status': status, 'token': token}
 

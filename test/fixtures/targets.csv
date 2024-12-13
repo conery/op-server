@@ -1,3 +1,3 @@
-abbrev,long,short,habitat,prepass,postpass,unscaled,label,infra
-T1,,Target1,HAB1,PRE1,POST1,HAB1,,
-T2,,Target2,HAB2,PRE2,POST2,HAB2,,
+abbrev,long,short,label,infra
+T1,Target 1,Targ1,,
+T2,Target 2,Targ2,,
