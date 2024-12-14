@@ -216,7 +216,7 @@ class OptiPass:
         template = 'bin\\OptiPassMain.exe -f {bf} -o {of} -b {n}'
 
         budget = bmin
-        for i in range(bcount):
+        for i in range(bcount)+1:
             outfile = Path(self.tempdir) / f'output_{i}.txt'
             cmnd = template.format(bf=barrier_file, of=outfile, n=budget)
             if (num_targets := len(self.targets)) > 1:
