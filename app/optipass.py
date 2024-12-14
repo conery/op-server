@@ -308,7 +308,7 @@ class OptiPass:
         '''
         # make a copy of the barrier data with NaN replaced by 0s and using the
         # barrier ID as the index
-        df = self.barriers.fillna(0).set_index('BARID')
+        df = self.barriers.fillna(0).set_index('ID')
         wph = np.zeros(len(self.summary))
         for i in range(len(self.targets)):
             t = self.targets.iloc[i]
