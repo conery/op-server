@@ -50,7 +50,7 @@ def run_optipass(
     op = OptiPass(barrier_path, target_file, mapping_file, regions, targets, weights)
     op.create_input_frame()
     op.create_paths()
-    op.run(budgets)
+    op.run(*budgets)
     op.collect_results()
     op.save_results()
 
@@ -205,7 +205,7 @@ class OptiPass:
             self.weights = [1] * len(self.targets)
             self.weighted = False
 
-    def run(self, bmin, bcount, bdelta):
+    def run(self, bmin, bdelta, bcount):
         '''
         Create a folder to run OptiPass in, write the barrier file, run OP
         for each budget level.
