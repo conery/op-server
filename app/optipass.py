@@ -222,7 +222,7 @@ class OptiPass:
             if (num_targets := len(self.targets)) > 1:
                 cmnd += ' -t {}'.format(num_targets)
                 cmnd += ' -w ' + ', '.join([str(n) for n in self.weights])
-                res = subprocess.run(cmnd, shell=True, capture_output=True)
+            res = subprocess.run(cmnd, shell=True, capture_output=True)
             print(cmnd)
             budget += bdelta
 
