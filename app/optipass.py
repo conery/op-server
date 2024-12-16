@@ -306,17 +306,17 @@ class OptiPass:
         budget level, then the weighted potential habitat over all targets, and
         finally the net gain.
         '''
-        # make a copy of the barrier data with NaN replaced by 0s and using the
+        # make a copy of the passability data with NaN replaced by 0s and using the
         # barrier ID as the index
-        df = self.barriers.fillna(0).set_index('ID')
+        df = self.passability.fillna(0).set_index('ID')
         wph = np.zeros(len(self.summary))
         for i in range(len(self.targets)):
-            t = self.targets.iloc[i]
+            t = self.mapping.iloc[i]
             cp = self._ah(t, df)
             wph += (self.weights[i] * cp)
-            col = pd.DataFrame({self.targets.index[i]: cp})
+            col = pd.DataFrame({t.name: cp})
             self.summary = pd.concat([self.summary, col], axis=1)
-            gain = self._gain(self.targets.index[i], t, df)
+            gain = self._gain(t.name, t, df)
             self.matrix = pd.concat([self.matrix, df[t.unscaled], gain], axis=1)
         self.summary = pd.concat([self.summary, pd.DataFrame({'wph': wph})], axis = 1)
     #    self.summary['netgain'] = self.summary.habitat - self.summary.habitat[0]

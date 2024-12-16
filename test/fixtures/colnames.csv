@@ -1,3 +1,3 @@
 abbrev,habitat,prepass,postpass,unscaled
-T1,HAB1,PRE1,POST1,
-T2,HAB2,PRE2,POST2,
+T1,HAB1,PRE1,POST1,HAB1
+T2,HAB2,PRE2,POST2,HAB2

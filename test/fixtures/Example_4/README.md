@@ -1,6 +1,6 @@
 ### Files for the running example from the OptiPass documentation (Box 4).
 
-`barriers.txt` is the barrier file, passed to OP with the `-f` option.  This
+`input.txt` is the barrier file passed to OP with the `-f` option.  This
 file is similar to Example 1, but it has two restoration targets (and the
 column names have been changed so they can be parsed by our application but
 this will not affect the optimization).
