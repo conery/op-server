@@ -51,10 +51,11 @@ def run_optipass(
     op.create_input_frame()
     op.create_paths()
     op.run(*budgets)
-    op.collect_results()
-    op.save_results()
+    # op.collect_results()
+    # op.save_results()
 
-    return Path(op.tempdir).stem
+    # return Path(op.tempdir).stem
+    return op.collect_results()
 
 class OptiPass:
     '''
@@ -248,6 +249,8 @@ class OptiPass:
         self.matrix = pd.DataFrame(dct, index=self.input_frame.ID)
         self.matrix['count'] = self.matrix.sum(axis=1)
         self.add_potential_habitat()
+
+        return self.summary, self.matrix
 
     def save_results(self):
         matrix_file = Path(self.tempdir) / 'matrix.txt'

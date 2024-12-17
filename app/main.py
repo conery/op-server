@@ -245,7 +245,7 @@ async def optipass(
         else:
             cname_file = cname_dir / mapping[0] / mapping[1]
  
-        token = run_optipass(
+        summary, matrix = run_optipass(
             barrier_path, 
             target_file,
             cname_file,
@@ -254,16 +254,17 @@ async def optipass(
             targets, 
             weights,
         )
-        status = 'ok'
+
+        return {
+            'summary': summary.to_json(),
+            'matrix': matrix.to_json(),
+        }
+
     except AssertionError as err:
-        token = f'op-server error: {err}'
-        status = 'fail'
+        raise HTTPException(status_code=404, detail=f'optipass: {err}')
     except Exception as err:
         logging.exception(err)
-        token = f'python error: {err}'
-        status = 'fail'
-
-    return {'status': status, 'token': token}
+        raise HTTPException(status_code=500, detail=f'server error: {err}')
 
 ###
 # Return the output tables from a previous run.  The parameter is a token

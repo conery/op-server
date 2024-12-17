@@ -141,21 +141,21 @@ def test_paths(barriers, targets, colnames):
     assert op.paths['B'] == ['B','A']
     assert op.paths['A'] == ['A']
 
-# def test_output_parser_one_target(barriers, targets, colnames):
-#     '''
-#     Parse an output file with only one target
+def test_output_parser_one_target(barriers, targets, colnames):
+    '''
+    Parse an output file with only one target
     
-#     Args:
-#         targets: test fixture with the name of the target file
-#         barriers:  test fixture with the name of the barrier file
-#     '''
-#     p = Path(os.path.dirname(__file__)) / 'fixtures' / 'Example_1' / 'output_5.txt'
-#     cols = { x: [] for x in ['budget', 'habitat', 'gates']}
-#     op = OptiPass(barriers, targets, colnames, ['Test1'], ['T1'], tmpdir=False)
-#     op.parse_output(p, cols)
-#     assert len(cols['budget']) == 1 and round(cols['budget'][0]) == 500
-#     assert len(cols['habitat']) == 1 and round(cols['habitat'][0], 2) == 8.52
-#     assert len(cols['gates']) == 1 and cols['gates'][0] == ['A', 'B', 'C', 'F']
+    Args:
+        targets: test fixture with the name of the target file
+        barriers:  test fixture with the name of the barrier file
+    '''
+    p = Path(os.path.dirname(__file__)) / 'fixtures' / 'Example_1' / 'output_5.txt'
+    cols = { x: [] for x in ['budget', 'habitat', 'gates']}
+    op = OptiPass(barriers, targets, colnames, ['Test1'], ['T1'], tmpdir=False)
+    op.parse_output(p, cols)
+    assert len(cols['budget']) == 1 and round(cols['budget'][0]) == 500000
+    assert len(cols['habitat']) == 1 and round(cols['habitat'][0], 2) == 8.52
+    assert len(cols['gates']) == 1 and cols['gates'][0] == ['A', 'B', 'C', 'F']
 
 def test_output_parser_two_targets(barriers, targets, colnames):
     '''
@@ -173,35 +173,35 @@ def test_output_parser_two_targets(barriers, targets, colnames):
     assert len(cols['habitat']) == 1 and round(cols['habitat'][0], 3) == 32.936
     assert len(cols['gates']) == 1 and cols['gates'][0] == ['A', 'B', 'C', 'F']
 
-# def test_example_1(barriers, targets, colnames):
-#     '''
-#     Collect all the results for Example 1 from the OptiPass User Manual.
+def test_example_1(barriers, targets, colnames):
+    '''
+    Collect all the results for Example 1 from the OptiPass User Manual.
     
-#     Args:
-#         targets: test fixture with the name of the target file
-#         barriers:  test fixture with the name of the barrier file
-#     '''
-#     op = OptiPass(barriers, targets, colnames, ['Trident', 'Red Fork'], ['T1'], tmpdir=False)
-#     op.create_input_frame()
-#     op.create_paths()
-#     p = Path(os.path.dirname(__file__)) / 'fixtures' / 'Example_1'
-#     op.collect_results(tmpdir=p)
+    Args:
+        targets: test fixture with the name of the target file
+        barriers:  test fixture with the name of the barrier file
+    '''
+    op = OptiPass(barriers, targets, colnames, ['Trident', 'Red Fork'], ['T1'], tmpdir=False)
+    op.create_input_frame()
+    op.create_paths()
+    p = Path(os.path.dirname(__file__)) / 'fixtures' / 'Example_1'
+    op.collect_results(tmpdir=p)
 
-#     assert type(op.summary) == pd.DataFrame
-#     assert len(op.summary) == 6
-#     assert round(op.summary.budget.sum()) == 1500
-#     assert round(op.summary.habitat.sum(),2) == 23.30
+    assert type(op.summary) == pd.DataFrame
+    assert len(op.summary) == 6
+    assert round(op.summary.budget.sum()) == 1500000
+    assert round(op.summary.habitat.sum(),2) == 23.30
 
-#     budget_cols = [col for col in op.matrix.columns if isinstance(col,int)]
-#     assert budget_cols == list(op.summary.budget)
+    budget_cols = [col for col in op.matrix.columns if isinstance(col,int)]
+    assert budget_cols == list(op.summary.budget)
 
-#     # these comprehensions make lists of budgets where a specified gate was selected,
-#     # e.g. gate A is in the $400K and $500K budgets and D is never selected.
-#     assert [b for b in op.matrix.columns if isinstance(b, int) and op.matrix.loc['A',b]] == [400,500]
-#     assert [b for b in op.matrix.columns if isinstance(b, int) and op.matrix.loc['D',b]] == [ ]
-#     assert [b for b in op.matrix.columns if isinstance(b, int) and op.matrix.loc['E',b]] == [100,300]
+    # these comprehensions make lists of budgets where a specified gate was selected,
+    # e.g. gate A is in the $400K and $500K budgets and D is never selected.
+    assert [b for b in op.matrix.columns if isinstance(b, int) and op.matrix.loc['A',b]] == [400000,500000]
+    assert [b for b in op.matrix.columns if isinstance(b, int) and op.matrix.loc['D',b]] == [ ]
+    assert [b for b in op.matrix.columns if isinstance(b, int) and op.matrix.loc['E',b]] == [100000,300000]
 
-#     assert list(op.matrix['count']) == [2,4,3,0,2,1]   # number of times each gate is part of a solution
+    assert list(op.matrix['count']) == [2,4,3,0,2,1]   # number of times each gate is part of a solution
 
 def test_example_4(barriers, targets, colnames):
     '''
@@ -229,26 +229,26 @@ def test_example_4(barriers, targets, colnames):
 
     assert list(op.matrix['count']) == [2,4,3,0,2,1]   # number of times each gate is part of a solution
 
-# def test_potential_habitat_1(barriers, targets, colnames):
-#     '''
-#     Test the method that computes potential habitat, using the results 
-#     genearated for Example 1 in the OptiPass manual (Box 9).
+def test_potential_habitat_1(barriers, targets, colnames):
+    '''
+    Test the method that computes potential habitat, using the results 
+    genearated for Example 1 in the OptiPass manual (Box 9).
     
-#     Args:
-#         targets: test fixture with the name of the target file
-#         barriers:  test fixture with the name of the barrier file
-#     '''
-#     op = OptiPass(barriers, targets, colnames, ['Trident', 'Red Fork'], ['T1'], tmpdir=False)
-#     op.create_input_frame()
-#     op.create_paths()
-#     p = Path(os.path.dirname(__file__)) / 'fixtures' / 'Example_1'
-#     op.collect_results(tmpdir=p)
+    Args:
+        targets: test fixture with the name of the target file
+        barriers:  test fixture with the name of the barrier file
+    '''
+    op = OptiPass(barriers, targets, colnames, ['Trident', 'Red Fork'], ['T1'], tmpdir=False)
+    op.create_input_frame()
+    op.create_paths()
+    p = Path(os.path.dirname(__file__)) / 'fixtures' / 'Example_1'
+    op.collect_results(tmpdir=p)
 
-#     m = op.summary
-#     assert len(m) == 6
-#     assert 'T1' in m.columns and 'wph' in m.columns
-#     assert round(m.wph[0],3) == 1.238      # PTNL_HABITAT at $0
-#     assert round(m.wph[5],3) == 8.520      # PTNL_HABITAT at $500K
+    m = op.summary
+    assert len(m) == 6
+    assert 'T1' in m.columns and 'wph' in m.columns
+    assert round(m.wph[0],3) == 1.238      # PTNL_HABITAT at $0
+    assert round(m.wph[5],3) == 8.520      # PTNL_HABITAT at $500K
 
 def test_potential_habitat_4(barriers, targets, colnames):
     '''
