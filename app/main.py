@@ -243,7 +243,7 @@ async def optipass(
         if mapping is None:
             cname_file = cname_dir / COLNAME_FILE
         else:
-            cname_file = cname_dir / mapping[0] / mapping[1]
+            cname_file = cname_dir / mapping[0] / f'{mapping[1]}.csv'
  
         summary, matrix = run_optipass(
             barrier_path, 
@@ -262,34 +262,36 @@ async def optipass(
 
     except AssertionError as err:
         raise HTTPException(status_code=404, detail=f'optipass: {err}')
+    except NotImplementedError:
+        raise HTTPException(status_code=501, detail=f'OptiPassMain.exe not found')
     except Exception as err:
         logging.exception(err)
         raise HTTPException(status_code=500, detail=f'server error: {err}')
 
-###
-# Return the output tables from a previous run.  The parameter is a token
-# returns from that call that ran OptiPass -- its' the name of the directory
-# that has the tables.
+# ###
+# # Return the output tables from a previous run.  The parameter is a token
+# # returns from that call that ran OptiPass -- its' the name of the directory
+# # that has the tables.
 
-OUTPUTS = 'tmp'
+# OUTPUTS = 'tmp'
 
-@app.get("/tables/{token}")
-async def tables(token: str):
-    '''
-    Respond to a GET request of the form `/tables/T` where T is a token returned by an earlier call to `optipass`.
+# @app.get("/tables/{token}")
+# async def tables(token: str):
+#     '''
+#     Respond to a GET request of the form `/tables/T` where T is a token returned by an earlier call to `optipass`.
 
-    Returns:
-        a dictionary with a status code and two output tables
-    '''
+#     Returns:
+#         a dictionary with a status code and two output tables
+#     '''
 
-    try:
-        with open(Path(OUTPUTS) / token / 'matrix.txt') as f:
-            matrix = f.read()
-        with open(Path(OUTPUTS) / token / 'summary.txt') as f:
-            summary = f.read()
-        result = {'status': 'ok', 'matrix': matrix, 'summary': summary}
-    except Exception as err:
-        result = {'status': 'fail', 'message': f'error reading results for {token}: {str(err)}'}
+#     try:
+#         with open(Path(OUTPUTS) / token / 'matrix.txt') as f:
+#             matrix = f.read()
+#         with open(Path(OUTPUTS) / token / 'summary.txt') as f:
+#             summary = f.read()
+#         result = {'status': 'ok', 'matrix': matrix, 'summary': summary}
+#     except Exception as err:
+#         result = {'status': 'fail', 'message': f'error reading results for {token}: {str(err)}'}
 
-    return result
+#     return result
 

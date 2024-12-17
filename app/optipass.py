@@ -2,6 +2,7 @@
 # Interface to OptiPass.exe (command line version of OptiPass)
 #
 
+import logging
 from math import prod
 import networkx as nx
 import numpy as np
@@ -210,7 +211,12 @@ class OptiPass:
         '''
         Create a folder to run OptiPass in, write the barrier file, run OP
         for each budget level.
+
+        Raises an exception if OptiPass is not installed.
         '''
+        if not optipass_is_installed():
+            raise NotImplementedError('OptiPassMain.exe not found')
+
         barrier_file = Path(self.tempdir) / 'input.txt'
         self.input_frame.to_csv(barrier_file, index=False, sep='\t', lineterminator=os.linesep, na_rep='NA')
 
@@ -224,7 +230,8 @@ class OptiPass:
                 cmnd += ' -t {}'.format(num_targets)
                 cmnd += ' -w ' + ', '.join([str(n) for n in self.weights])
             res = subprocess.run(cmnd, shell=True, capture_output=True)
-            print(cmnd)
+            print(res.stderr)
+            logging.info(cmnd)
             budget += bdelta
 
     def collect_results(self, tmpdir=None):
