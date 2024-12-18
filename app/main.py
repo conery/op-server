@@ -210,6 +210,7 @@ async def optipass(
     targets: Annotated[list[str], Query()], 
     weights: Annotated[list[int] | None, Query()] = None, 
     mapping: Annotated[list[str] | None, Query()] = None,
+    tmpdir:  Annotated[str | None, Query()] = None,
 ):
     '''
     A GET request of the form `/optipass/project?ARGS` runs OptiPass using the parameter 
@@ -222,6 +223,7 @@ async def optipass(
         budgets:  a list with starting budget, increment, and count
         weights:  list of ints, one for each target (optional)
         mapping:  project-specific target names, e.g. `current` or `future` (optional)
+        tempdir:  directory that has existing results (optional, used in testing)
 
     Returns:
         a dictionary with a status indicator and a token that can be used to fetch results.
@@ -232,6 +234,7 @@ async def optipass(
     logging.debug(f'targets {targets}')
     logging.debug(f'weights {weights}')
     logging.debug(f'mapping {mapping}')
+    logging.debug(f'tempdir {tempdir}')
 
     try:
         assert project in project_names, f'unknown project: {project}'
@@ -253,6 +256,7 @@ async def optipass(
             budgets,
             targets, 
             weights,
+            tempdir,
         )
 
         return {
