@@ -259,10 +259,11 @@ async def optipass(
             tempdir,
         )
 
-        return {
-            'summary': summary.to_json(),
-            'matrix': matrix.to_json(),
-        }
+        # return {
+        #     'summary': summary.to_json(),
+        #     'matrix': matrix.to_json(),
+        # }
+        return "OK"
 
     except AssertionError as err:
         raise HTTPException(status_code=404, detail=f'optipass: {err}')

@@ -251,7 +251,7 @@ class OptiPass:
             b = int(self.summary.budget[i])
             dct[b] = [ 1 if g in self.summary.gates[i] else 0 for g in self.input_frame.ID]
         self.matrix = pd.DataFrame(dct, index=self.input_frame.ID)
-        # self.matrix['count'] = self.matrix.sum(axis=1)
+        self.matrix['count'] = self.matrix.sum(axis=1)
         # self.add_potential_habitat()
 
         return self.summary, self.matrix
