@@ -210,7 +210,7 @@ async def optipass(
     targets: Annotated[list[str], Query()], 
     weights: Annotated[list[int] | None, Query()] = None, 
     mapping: Annotated[list[str] | None, Query()] = None,
-    tmpdir:  Annotated[str | None, Query()] = None,
+    tempdir: Annotated[str | None, Query()] = None,
 ):
     '''
     A GET request of the form `/optipass/project?ARGS` runs OptiPass using the parameter 
