@@ -241,6 +241,7 @@ class OptiPass:
         OptiPass makes one output file for each budget level.  Iterate
         over those files to gather results into a data frame.  
         '''
+        return
         cols = { x: [] for x in ['budget', 'habitat', 'gates']}
         for fn in sorted(self.tmpdir.glob('output_*.txt')):
             self.parse_output(fn, cols)
