@@ -272,8 +272,7 @@ async def optipass(
         raise HTTPException(status_code=500, detail=str(err))
     except Exception as err:
         logging.exception(err)
-        # raise HTTPException(status_code=500, detail=f'server error: {err}')
-        exit(1)
+        raise HTTPException(status_code=500, detail=f'server error: {err}')
 
 # ###
 # # Return the output tables from a previous run.  The parameter is a token
