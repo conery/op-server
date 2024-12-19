@@ -120,16 +120,13 @@ class OptiPass:
 
         # Initialize the output frame (df) with the ID and region columns 
         # from the data set 
-        print(len(self.barriers), 'barriers')
 
         df = self.barriers[['ID','region']]
         header = ['ID','REG']
-        print(len(df), 'barriers')
 
         # The FOCUS column is all 1's
-        df = pd.concat([df, pd.Series(np.ones(len(self.barriers)), name='FOCUS', dtype=int)], axis=1)
+        df = pd.concat([df, pd.Series(np.ones(len(self.barriers)), name='FOCUS', dtype=int, index=self.barriers.index)], axis=1)
         header.append('FOCUS')
-        print(df)
 
         # Copy the downstream ID column
         df = pd.concat([df, self.barriers['DSID']], axis=1)
@@ -153,7 +150,7 @@ class OptiPass:
         header.append('NPROJ')
 
         # The ACTION column is always all 0 (we consider only one scenario)
-        df = pd.concat([df, pd.Series(np.zeros(len(self.barriers)), name='ACTION', dtype=int)], axis=1)
+        df = pd.concat([df, pd.Series(np.zeros(len(self.barriers)), name='ACTION', dtype=int, index=self.barriers.index)], axis=1)
         header.append('ACTION')
 
         # Copy the cost to fix a gate
@@ -264,7 +261,7 @@ class OptiPass:
             dct[b] = [ 1 if g in self.summary.gates[i] else 0 for g in self.input_frame.ID]
         self.matrix = pd.DataFrame(dct, index=self.input_frame.ID)
         self.matrix['count'] = self.matrix.sum(axis=1)
-        # self.add_potential_habitat()
+        self.add_potential_habitat()
 
         return self.summary, self.matrix
 
