@@ -124,12 +124,11 @@ class OptiPass:
         header = ['ID','REG']
 
         # The FOCUS column is all 1's
-        df = pd.concat([df, pd.Series(np.ones(len(self.barriers)), name='FOCUS', dtype=int)], axis=1)
+        df = pd.concat([df, pd.Series(np.ones(len(self.df)), name='FOCUS', dtype=int)], axis=1)
         header.append('FOCUS')
-        print(df)
 
         # Copy the downstream ID column
-        df = pd.concat([df, self.barriers['DSID']], axis=1)
+        df = pd.concat([df, self.df['DSID']], axis=1)
         header.append('DSID')
 
         # Add habitat column for each target.  The name of the column to copy is
@@ -146,15 +145,15 @@ class OptiPass:
             header.append('PRE_'+t)
 
         # Copy the NPROJ column (1 if a gate is used, 0 if not)
-        df = pd.concat([df, self.barriers['NPROJ']], axis=1)
+        df = pd.concat([df, self.df['NPROJ']], axis=1)
         header.append('NPROJ')
 
         # The ACTION column is always all 0 (we consider only one scenario)
-        df = pd.concat([df, pd.Series(np.zeros(len(self.barriers)), name='ACTION', dtype=int)], axis=1)
+        df = pd.concat([df, pd.Series(np.zeros(len(self.df)), name='ACTION', dtype=int)], axis=1)
         header.append('ACTION')
 
         # Copy the cost to fix a gate
-        df = pd.concat([df, self.barriers['cost']], axis=1)
+        df = pd.concat([df, self.df['cost']], axis=1)
         header += ['COST']
 
         # Same logic as above, copy the post-mitigation passage for each target
