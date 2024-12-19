@@ -259,16 +259,17 @@ async def optipass(
             tempdir,
         )
 
-        # return {
-        #     'summary': summary.to_json(),
-        #     'matrix': matrix.to_json(),
-        # }
-        return "OK"
+        return {
+            'summary': summary.to_json(),
+            'matrix': matrix.to_json(),
+        }
 
     except AssertionError as err:
         raise HTTPException(status_code=404, detail=f'optipass: {err}')
     except NotImplementedError:
         raise HTTPException(status_code=501, detail=f'OptiPassMain.exe not found')
+    except RuntimeError as err:
+        raise HTTPException(status_code=500, detail=err')
     except Exception as err:
         logging.exception(err)
         raise HTTPException(status_code=500, detail=f'server error: {err}')

@@ -10,6 +10,7 @@ import os
 import pandas as pd
 from pathlib import Path
 import platform
+import re
 import subprocess
 import tempfile
 
@@ -232,8 +233,10 @@ class OptiPass:
                 cmnd += ' -t {}'.format(num_targets)
                 cmnd += ' -w ' + ', '.join([str(n) for n in self.weights])
             res = subprocess.run(cmnd, shell=True, capture_output=True)
-            print(res.stderr)
             logging.info(cmnd)
+            if re.search(r'error', res.stdout, re.I):
+                logging.error(f'OptiPassMain.exe: {res.stdout}')
+                raise RuntimeError(res.stdout)
             budget += bdelta
 
     def collect_results(self):
