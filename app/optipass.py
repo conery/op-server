@@ -234,9 +234,10 @@ class OptiPass:
                 cmnd += ' -w ' + ', '.join([str(n) for n in self.weights])
             res = subprocess.run(cmnd, shell=True, capture_output=True)
             logging.info(cmnd)
-            if re.search(r'error', res.stdout.decode(), re.I):
-                logging.error(f'OptiPassMain.exe: {res.stdout}')
-                raise RuntimeError(res.stdout)
+            resp = res.stdout.decode()
+            if re.search(r'error', resp, re.I):
+                logging.error(f'OptiPassMain.exe: {resp}')
+                raise RuntimeError(resp)
             budget += bdelta
 
     def collect_results(self):
