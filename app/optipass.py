@@ -126,6 +126,7 @@ class OptiPass:
         # The FOCUS column is all 1's
         df = pd.concat([df, pd.Series(np.ones(len(self.barriers)), name='FOCUS', dtype=int)], axis=1)
         header.append('FOCUS')
+        print(df)
 
         # Copy the downstream ID column
         df = pd.concat([df, self.barriers['DSID']], axis=1)
