@@ -235,10 +235,14 @@ class OptiPass:
             res = subprocess.run(cmnd, shell=True, capture_output=True)
             logging.info(cmnd)
             resp = res.stdout.decode()
-            if re.search(r'error', resp, re.I):
-                logging.error(f'OptiPassMain.exe: {resp}')
-                raise RuntimeError(resp)
+            # if re.search(r'error', resp, re.I):
+            #     logging.error(f'OptiPassMain.exe: {resp}')
+            #     raise RuntimeError(resp)
             budget += bdelta
+        
+        n = len(list(self.tmpdir.glob('output*.txt'))) 
+        if n < bcount+1:
+            raise RuntimeError(f'No output for {bcnt-n} of {n} optimizations')
 
     def collect_results(self):
         '''
