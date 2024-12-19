@@ -242,7 +242,7 @@ class OptiPass:
         
         n = len(list(self.tmpdir.glob('output*.txt'))) 
         if n < bcount+1:
-            raise RuntimeError(f'No output for {bcnt-n} of {n} optimizations')
+            raise RuntimeError(f'No output for {bcount-n} of {n} optimizations')
 
     def collect_results(self):
         '''
