@@ -269,7 +269,7 @@ async def optipass(
     except NotImplementedError:
         raise HTTPException(status_code=501, detail=f'OptiPassMain.exe not found')
     except RuntimeError as err:
-        raise HTTPException(status_code=500, detail=err)
+        raise HTTPException(status_code=500, detail=str(err))
     except Exception as err:
         logging.exception(err)
         # raise HTTPException(status_code=500, detail=f'server error: {err}')
