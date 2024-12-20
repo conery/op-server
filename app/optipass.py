@@ -105,7 +105,7 @@ class OptiPass:
 
         self.set_target_weights(weights)
        
-        self.tmpdir = tmpdir
+        self.tmpdir = Path(tmpdir) if tmpdir else None
         self.input_frame = None
         self.paths = None
         self.summary = None
@@ -215,6 +215,7 @@ class OptiPass:
         Raises an exception if OptiPass is not installed.
         '''
         if self.tmpdir is not None:
+            logging.info(f'Using saved results in {self.tmpdir}')
             return
        
         if not optipass_is_installed():
@@ -251,7 +252,7 @@ class OptiPass:
         over those files to gather results into a data frame.  
         '''
         cols = { x: [] for x in ['budget', 'habitat', 'gates']}
-        for fn in sorted(self.tmpdir.glob('output_*.txt')):
+        for fn in sorted(self.tmpdir.glob('output_*.txt'), key=lambda p: int(p.stem[7:])):
             self.parse_output(fn, cols)
         self.summary = pd.DataFrame(cols)
         
@@ -264,13 +265,6 @@ class OptiPass:
         self.add_potential_habitat()
 
         return self.summary, self.matrix
-
-    def save_results(self):
-        matrix_file = self.tmpdir / 'matrix.txt'
-        self.matrix.to_csv(matrix_file, lineterminator=os.linesep, na_rep='NA')
-
-        summary_file = self.tmpdir / 'summary.txt'
-        self.summary.to_csv(summary_file, index=False, lineterminator=os.linesep, na_rep='NA')
 
     def parse_output(self, fn, dct):
         '''
@@ -285,6 +279,7 @@ class OptiPass:
                 return None
             return tokens[1]
 
+        logging.debug(f'parsing {fn}')
         with open(fn) as f:
             amount = parse_header_line(f.readline(), 'BUDGET')
             dct['budget'].append(float(amount))
@@ -333,9 +328,11 @@ class OptiPass:
             col = pd.DataFrame({t.name: cp})
             self.summary = pd.concat([self.summary, col], axis=1)
             gain = self._gain(t.name, t, df)
-            self.matrix = pd.concat([self.matrix, df[t.unscaled], gain], axis=1)
+            mcol = df[t.unscaled]
+            mcol.name = t.name
+            self.matrix = pd.concat([self.matrix, mcol, gain], axis=1)
         self.summary = pd.concat([self.summary, pd.DataFrame({'wph': wph})], axis = 1)
-    #    self.summary['netgain'] = self.summary.habitat - self.summary.habitat[0]
+        self.summary['netgain'] = self.summary.habitat - self.summary.habitat[0]
  
     # Private method: compute the available habitat for a target, in the form of
     # a vector of habitat values for each budget level

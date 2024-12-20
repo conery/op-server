@@ -260,8 +260,8 @@ async def optipass(
         )
 
         return {
-            'summary': summary.to_json(),
-            'matrix': matrix.to_json(),
+            'summary': summary.to_csv(),
+            'matrix': matrix.to_csv(),
         }
 
     except AssertionError as err:
