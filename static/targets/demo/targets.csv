@@ -1,3 +1,3 @@
 abbrev,long,short,label,infra
-T1,Target 1,Targ1,,
-T2,Target 2,Targ2,,
+T1,Target 1,Targ1,Target 1 (km),False
+T2,Target 2,Targ2,Target 2 (km),False
