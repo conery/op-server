@@ -321,7 +321,6 @@ class OptiPass:
         # barrier ID as the index
         df = self.passability.fillna(0).set_index('ID')
         wph = np.zeros(len(self.summary))
-        print(self.weights)
         for i in range(len(self.targets)):
             t = self.mapping.iloc[i]
             cp = self._ah(t, df) * self.weights[i]
