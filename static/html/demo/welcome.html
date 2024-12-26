@@ -1,0 +1,53 @@
+<p>
+    Migratory fish may encounter several man-made barriers during their journey.
+    Tide gates, levees, culverts, and other infrastructure makes it difficult for fish to access vital habitat for foraging, spawning, and resting.
+</p>
+<p>
+    Aging barriers often need to be updated or replaced.
+    Since improving barriers is very costly, stakeholders need to decide how to allocate funds in a way that maximizes improvements.
+    <em>OptiPass&trade;</em>, an application developed by Dr. Jesse O'Hanley of Ecotelligence&reg; LLC, is a software tool that models the important attributes of barriers -- location, cost to repair, and expected benefits after repair -- and idenfifies the optimal set of barriers for any specified budget.
+</p>
+<p>
+    OptiPass runs only on Microsoft Windows&reg systems.  
+    In order to make it easier to deploy applications that want to use OptiPass a project led by The Nature Conservancy has developed two web applications:
+</p>
+<ul>
+    <li> 
+        A server, named <em><code>op-server</code></em>, is a RESTful web service that provides an interface to OptiPass.
+    </li>
+    <li>
+        A client, named <em><code>op-client</code></em>, is a web application that displays an interface that allows users to select runtime options (select barriers, specify budget levels, <it>etc.</it>) and then pass those optioms to the server to have it run OptiPass.
+    </li>
+</ul>
+<p>
+    What are looking at now is an instance of the client.
+    It is configured to connect to a server that has example data from the OptiPass User Manual.
+</p>
+<p>
+    Click the <b>Help</b> tab above to learn how the interface is organized and how to define parameters for an optimization.
+</p>
+<p>
+    When you are ready to run the optimizer click on the <b>Start</b> tab.
+</p>
+<p>
+    When the OptiPass server returns the results from an optimization they can be viewed in the <b>Output</b> tab.  The <b>Download</b> tab will have options for saving results.
+</p>
+
+<H3>Acknowledgments</H3>
+<p>
+    To learn more about OptiPass see <i>OptiPass: The Migratory Fish Passage Optimization Tool</i>, Version 1.1.2 User Manual (O'Hanley 2017), at <a href="https://www.ecotelligence.net">https://www.ecotelligence.net/</a>.
+</p>
+<p>
+    <code>op-server</code> is written in Python, using the FastAPI library.
+    The code is available on GitHub at <a href="https://github.com/conery/op-server">https://github.com/conery/op-server</a>.
+    The documentation at <a href="https://conery.github.io/op-server">https://conery.github.io/op-server</a> explains how to install the server (which must be run on a Microsoft Windows host) and configure it to serve data from a real river system.
+</p>
+<p>
+    <code>op-client</code> is also written in Python, using the Panel library to present the GUI.
+    The code is available on GitHub at <a href="https://github.com/conery/op-client">https://github.com/conery/op-client</a>.
+    The documentation at <a href="https://conery.github.io/op-client">https://conery.github.io/op-client</a> explains how to install and configure the server.
+</p>
+<p>
+    (TBD) The client will also be available as a Docker image at ...
+</p>
+

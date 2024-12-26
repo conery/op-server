@@ -25,7 +25,11 @@ def init():
     names of projects, a dictionary of region names for each project.
     '''
 
-    global BARRIERS, BARRIER_FILE, MAPS, MAPINFO_FILE, TARGETS, TARGET_FILE, LAYOUT_FILE, COLNAMES, COLNAME_FILE, TMPDIR
+    global BARRIERS, BARRIER_FILE
+    global MAPS, MAPINFO_FILE
+    global TARGETS, TARGET_FILE, LAYOUT_FILE
+    global COLNAMES, COLNAME_FILE
+    global HTMLDIR, IMAGEDIR
 
     MAPS = 'static/maps'
     MAPINFO_FILE = 'mapinfo.json'
@@ -40,8 +44,8 @@ def init():
     COLNAMES = 'static/colnames'
     COLNAME_FILE = 'colnames.csv'
 
-    # Set to False to save outputs in project folder
-    TMPDIR = False
+    HTMLDIR = 'static/html'
+    IMAGEDIR = 'static/images'
 
     global project_names, region_names
 
@@ -103,6 +107,28 @@ async def projects():
         a list of the names of the projects (datasets) managed by the server.
     '''
     return project_names
+
+###
+# Return an HTML page for a project
+
+@app.get("/html/{project}/{filename}")
+async def image(project: str, filename: str):
+    if project in project_names:
+        return read_text_file(project, HTMLDIR, filename)
+    else:
+        raise HTTPException(status_code=404, detail=f'html: unknown project: {project}')
+
+###
+# Return a static image for a project
+
+@app.get("/image/{project}/{filename}")
+async def image(project: str, filename: str):
+    if project in project_names:
+        p = Path(IMAGEDIR) / project / filename
+        logging.info(f'image: {p}')
+        return FileResponse(p)
+    else:
+        raise HTTPException(status_code=404, detail=f'html: unknown project: {project}')
 
 ###
 # Return the barrier file for a project.
