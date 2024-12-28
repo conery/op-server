@@ -45,7 +45,7 @@ def init():
     COLNAME_FILE = 'colnames.csv'
 
     HTMLDIR = 'static/html'
-    IMAGEDIR = 'static/images'
+    # IMAGEDIR = 'static/images'
 
     global project_names, region_names
 
@@ -67,7 +67,7 @@ def init():
             region_names[project] = { rec.split(',')[1] for rec in f }
     logging.info(f'regions: {region_names}')
 
-def read_text_file(project, area, fn):
+def read_text_file(project: str, area: str, fn: str) -> str:
     '''
     Read a text file from one of the static subdirectories.
 
@@ -99,7 +99,7 @@ app = FastAPI()
 # Return a list of project names.
         
 @app.get("/projects")
-async def projects():
+async def projects() -> list[str]:
     '''
     Respond to GET requests of the form `/projects`.
     
@@ -112,29 +112,29 @@ async def projects():
 # Return an HTML page for a project
 
 @app.get("/html/{project}/{filename}")
-async def image(project: str, filename: str):
+async def html(project: str, filename: str) -> str:
     if project in project_names:
         return read_text_file(project, HTMLDIR, filename)
     else:
         raise HTTPException(status_code=404, detail=f'html: unknown project: {project}')
 
-###
-# Return a static image for a project
+# ###
+# # Return a static image for a project
 
-@app.get("/image/{project}/{filename}")
-async def image(project: str, filename: str):
-    if project in project_names:
-        p = Path(IMAGEDIR) / project / filename
-        logging.info(f'image: {p}')
-        return FileResponse(p)
-    else:
-        raise HTTPException(status_code=404, detail=f'html: unknown project: {project}')
+# @app.get("/image/{project}/{filename}")
+# async def image(project: str, filename: str) -> FileResponse:
+#     if project in project_names:
+#         p = Path(IMAGEDIR) / project / filename
+#         logging.info(f'image: {p}')
+#         return FileResponse(p)
+#     else:
+#         raise HTTPException(status_code=404, detail=f'html: unknown project: {project}')
 
 ###
 # Return the barrier file for a project.
 
 @app.get("/barriers/{project}")
-async def barriers(project: str):
+async def barriers(project: str) -> dict:
     '''
     Respond to GET requests of the form `/barriers/P` where P is a project name.
 
@@ -151,7 +151,7 @@ async def barriers(project: str):
 # Return the settings for displaying a map for a project.
 
 @app.get("/mapinfo/{project}")
-async def mapinfo(project: str):
+async def mapinfo(project: str) -> dict:
     '''
     Respond to GET requests of the form `/mapinfo/P` where P is a project name.
 
@@ -169,7 +169,7 @@ async def mapinfo(project: str):
 # Return a static map (image file) for a project
 
 @app.get("/map/{project}/{filename}")
-async def map(project: str, filename: str):
+async def map(project: str, filename: str) -> FileResponse:
     p = Path(MAPS) / project / filename
     return FileResponse(p)
 
@@ -177,7 +177,7 @@ async def map(project: str, filename: str):
 # Return the restoration target descriptions
 
 @app.get("/targets/{project}")
-async def targets(project: str):
+async def targets(project: str) -> dict:
     '''
     Respond to GET requests of the form `/targets/P` where P is a project name.
 
@@ -198,7 +198,7 @@ async def targets(project: str):
 # named colnames.csv, or a directory with several CSV files.
 
 @app.get("/colnames/{project}")
-async def colnames(project: str):
+async def colnames(project: str) -> dict:
     '''
     Respond to GET requests of the form `/colnames/P` where P is a project name.
 
@@ -237,7 +237,7 @@ async def optipass(
     weights: Annotated[list[int] | None, Query()] = None, 
     mapping: Annotated[list[str] | None, Query()] = None,
     tempdir: Annotated[str | None, Query()] = None,
-):
+)-> dict:
     '''
     A GET request of the form `/optipass/project?ARGS` runs OptiPass using the parameter 
     values passed in the URL.
@@ -299,31 +299,3 @@ async def optipass(
     except Exception as err:
         logging.exception(err)
         raise HTTPException(status_code=500, detail=f'server error: {err}')
-
-# ###
-# # Return the output tables from a previous run.  The parameter is a token
-# # returns from that call that ran OptiPass -- its' the name of the directory
-# # that has the tables.
-
-# OUTPUTS = 'tmp'
-
-# @app.get("/tables/{token}")
-# async def tables(token: str):
-#     '''
-#     Respond to a GET request of the form `/tables/T` where T is a token returned by an earlier call to `optipass`.
-
-#     Returns:
-#         a dictionary with a status code and two output tables
-#     '''
-
-#     try:
-#         with open(Path(OUTPUTS) / token / 'matrix.txt') as f:
-#             matrix = f.read()
-#         with open(Path(OUTPUTS) / token / 'summary.txt') as f:
-#             summary = f.read()
-#         result = {'status': 'ok', 'matrix': matrix, 'summary': summary}
-#     except Exception as err:
-#         result = {'status': 'fail', 'message': f'error reading results for {token}: {str(err)}'}
-
-#     return result
-

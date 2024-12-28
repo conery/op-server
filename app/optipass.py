@@ -14,7 +14,7 @@ import re
 import subprocess
 import tempfile
 
-def optipass_is_installed():
+def optipass_is_installed() -> bool:
     '''
     Make sure OptiPass is installed.
 
@@ -32,7 +32,7 @@ def run_optipass(
         targets: list[str], 
         weights: list[int],
         tmpdir: Path | None = None,
-    ):
+    ) -> tuple:
     '''
     Run OptiPass using the specified arguments.  Instantiates an OP object
     with paths to data files, calls methods that create the input file,
@@ -49,7 +49,7 @@ def run_optipass(
         tmpdir: name of directory that has existing results (used for testing)
 
     Returns:
-        a token that can be used to retrieve results
+        a tuple containing two data frames, a budget table and a gate matrix
     '''
     op = OptiPass(barrier_path, target_file, mapping_file, regions, targets, weights, tmpdir)
     op.create_input_frame()
@@ -63,7 +63,8 @@ class OptiPass:
     budget levels to explore.  We need to run OptiPass.exe once for each budget
     level, then collect the results.
 
-    The general workflow is:
+    The general workflow:
+
     * create an instance of this class, passing the constructor the parameter
       values for the regions, targets, and budget levels
     * call a method to generate the input file (called a "barrier file" in the
@@ -76,7 +77,14 @@ class OptiPass:
     of the object.
     '''
 
-    def __init__(self, barriers, tfile, mfile, rlist, tlist, weights=None, tmpdir=None):
+    def __init__(self, 
+            barriers: str, 
+            tfile: str, 
+            mfile: str, 
+            rlist: list[str], 
+            tlist: list[str], 
+            weights: list[int] | None = None, 
+            tmpdir: str | None = None):
         '''
         Instantiate a new OP object.
 
@@ -115,7 +123,8 @@ class OptiPass:
         '''
         Build a data frame that has the rows that will be passed to OptiPass. This
         frame is basically a subset of the columns of the barrier frame, using column
-        names defined in the targets frame.
+        names defined in the targets frame.  The frame is saved as an instance variable
+        of this object.
         '''
 
         # Initialize the output frame (df) with the ID and region columns 
@@ -170,7 +179,8 @@ class OptiPass:
     def create_paths(self):
         '''
         Create paths downstream from each gate (the paths will be 
-        used to compute cumulative passability)
+        used to compute cumulative passability).  The paths are
+        saved in an instance variable.
         '''
         df = self.input_frame
 
@@ -183,19 +193,30 @@ class OptiPass:
 
         for x in df[df.DSID.isnull()].ID:
             G.add_node(x)
-        self.paths = { n: self._path_from(n,G) for n in G.nodes }
+        self.paths = { n: self.path_from(n,G) for n in G.nodes }
 
-    def _path_from(self, x, graph):
+    def path_from(self, x: str, graph: nx.DiGraph) -> list:
         '''
         Helper function used to create paths -- return a list of nodes in the path 
         from `x` to a downstream barrier that has no descendants.
+
+        Arguments:
+          x: a barrier ID
+          graph: a digraph based on downstream IDs
+
+        Returns:
+          a list of all barriers downstream from x
         '''
         return [x] + [child for _, child in nx.dfs_edges(graph,x)]
 
-    def set_target_weights(self, weights):
+    def set_target_weights(self, weights: list[int] | None):
         '''
         Create the target weight values that will be passed on the command line when
-        OptiPass is run
+        OptiPass is run.  If the list is None set each weight to 1.  Weights
+        are saved in an instance variable.
+
+        Arguments:
+          weights:  None if the user did not specify weighrs, otherwise the list of integer weights from the GUI
         '''
         if weights:
             self.weights = weights
@@ -204,15 +225,20 @@ class OptiPass:
             self.weights = [1] * len(self.targets)
             self.weighted = False
 
-    def run(self, bmin, bdelta, bcount):
+    def run(self, bmin: int, bdelta: int, bcount: int):
         '''
-        If the constructor was passed the name of a folder with existing data
-        return without doing anything (an option used by unit tests).
+        Run Optipass once for each budget level.  Create the shell commands and
+        run them.  Outputs are saved in a temp directory.
 
-        Otherwise create a folder to run OptiPass in, write the barrier file, run OP
-        for each budget level.
+        Arguments:
+          bmin:  starting budget level
+          bdelta:  budget increment
+          bcount:  number of budgets
 
-        Raises an exception if OptiPass is not installed.
+        Note:
+
+        * for unit tests the outputs are already in the temp directory so OptiPass isn't run
+        * when running OptiPass run it once with a budget of $0 and then once for each budget level
         '''
         if self.tmpdir is not None:
             logging.info(f'Using saved results in {self.tmpdir}')
@@ -246,10 +272,13 @@ class OptiPass:
         if n < bcount+1:
             raise RuntimeError(f'No output for {bcount-n} of {bcount} optimizations')
 
-    def collect_results(self):
+    def collect_results(self) -> tuple:
         '''
         OptiPass makes one output file for each budget level.  Iterate
-        over those files to gather results into a data frame.  
+        over those files to gather results into a pair of data frames. 
+
+        Returns:
+          a tuple with two data frames, one for budgets, the other for barriers 
         '''
         cols = { x: [] for x in ['budget', 'habitat', 'gates']}
         for fn in sorted(self.tmpdir.glob('output_*.txt'), key=lambda p: int(p.stem[7:])):
@@ -266,11 +295,16 @@ class OptiPass:
 
         return self.summary, self.matrix
 
-    def parse_output(self, fn, dct):
+    def parse_output(self, fn: str, dct: dict):
         '''
         Parse an output file, appending results to the lists in dct.  We need to 
         handle two different formats, depending on whether there was one target 
-        or more than one.
+        or more than one.  Values extracted from a file are appended to the lists 
+        passed in the dictionary argument.
+
+        Arguments:
+          fn: the name of the file to parse
+          dct: a dictionary containing lists for budget, habitat, and gate values
         '''
 
         def parse_header_line(line, tag):

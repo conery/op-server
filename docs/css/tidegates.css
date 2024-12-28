@@ -9,3 +9,42 @@ details.quote { margin-top: 0px; margin-bottom: 30px; }
     font-size: 80%;
     padding: 1px 1px;
 }
+
+.rst-content p {
+    /* color: red; */
+    margin-bottom: 10px;
+}
+
+.rst-content li {
+    /* color: red; */
+    margin-top: 5px;
+    margin-bottom: 3px;
+}
+
+.rst-content h1 {
+    color: darkblue;
+}
+
+.rst-content h2 {
+    color: darkblue;
+    margin-top: 20px;
+}
+
+.rst-content h3 {
+    color: darkblue;
+    margin-top: 15px;
+}
+
+.rst-content h4 {
+    font-size: 100%;
+    margin-top: 15px;
+}
+
+.rst-content table {
+    margin-top: 10px;
+}
+
+.rst-content img {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

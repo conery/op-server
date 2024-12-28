@@ -1,6 +1,6 @@
 # Modules
 
-The source code is in a folder named `app`.  There are only two source files in the folder, one (`main.py`) for the FastAPI application and one for running (`optipass.py`) that provides an abstract interface for running OptiPass
+The source code is in a folder named `app`.  There are only two source files in the folder, one (`main.py`) for the FastAPI application and one (`optipass.py`) that provides an abstract interface for running OptiPass.
 
 ```
 app
@@ -9,7 +9,7 @@ app
 ```
 ## `main.py`
 
-### Initialization
+### `init`
 
 ::: app.main.init
     options:
@@ -105,9 +105,11 @@ app
       filters: ""
       members_order: source
 
-### `tables`
+## `optipass.py`
 
-::: app.main.tables
+### `optipass_is_installed`
+
+::: app.optipass.optipass_is_installed
     options:
       show_root_toc_entry: false
       docstring_options:
@@ -117,7 +119,26 @@ app
       filters: ""
       members_order: source
 
-## `optipass.py`
+### `run_optipass`
 
-TBD
+::: app.optipass.run_optipass
+    options:
+      show_root_toc_entry: false
+      docstring_options:
+        ignore_init_summary: true
+      merge_init_into_class: true
+      heading_level: 3
+      filters: ""
+      members_order: source
 
+### OptiPass
+
+::: app.optipass.OptiPass
+    options:
+      show_root_toc_entry: false
+      docstring_options:
+        ignore_init_summary: true
+      merge_init_into_class: true
+      heading_level: 3
+      filters: ""
+      members_order: source

@@ -13,9 +13,10 @@ plugins:
 nav:
   - "Home":
     - index.md
+    - data.md
+    - api.md
   - "Installation":
     - install.md
   - "Documentation":
-    - data.md
     - modules.md
     - tests.md

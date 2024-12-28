@@ -1,139 +1,115 @@
-# Data Files
+# Data
 
-All of the data managed by the server is in the `static` folder.  The three types of data are barrier files, target descriptions, and column name mappings, each in a separate subfolder.
-
-## Projects
-
-Inside each subfolder there are additional folders for each data set.  The name of the folder is the **project name**.
-
-The GitHub repository includes a project named `demo` that is based on the examples in the OptiPass user manual (https://www.ecotelligence.net/home/optipass).  
-
-Each additional data set will go in its own set of folders.  As an example, the server for tide gates on the Oregon Coast has a project named `oregon`, which leads to this structure:
-
-```
-static
-├── barriers
-│   ├── demo
-│   │   └── ...
-│   └── oregon
-│       └── ...
-├── colnames
-│   ├── demo
-│   │   └── ...
-│   └── oregon
-│       └── ...
-└── targets
-    ├── demo
-    │   └── ...
-    └── oregon
-        └── ...
-```
+The three main types of data managed by the server are **barriers**, **targets**, and **passability**.
 
 ## Barriers
 
-A barrier file is a table (in CSV format) with one row for each tide gate, culvert, or other object that can restrict the flow of water in a river system.
+A barrier can be a tide gate, culvert, or any other impediment to fish migration.
 
-The first three columns are:
+Barrier data is kept in tables that have one row for each barrier.
+The columns of the table describe the key attributes:
 
-- `BARID`, a unique barrier ID
-- `REGION`, the name of the region the barrier is in (typically the name of a river system)
-- `DSID`, the ID of the nearest downstream barrier (OptiPass requires each barrier to have at most one downstream barrier)
+* a unique **ID**
+* a **region** name, which is typically the name of an estuary or river system
+* the ID of the barrier immediately downstream; we use the acronym **DSID** (this is left empty if the barrier is the at the mouth of the river)
+* the estimated **cost** to repair the barrier
+* the barrier's **location**, typically represented by latitude and longitude.
 
-The last two columns are
-
-- `COST`, the dollar amount for replacing or repairing the barrier (any units can be used, as long as they are all the same)
-
-- `NPROJ`, an integer that is either 0 or 1 in our data sets.  1 means the barrier should be included an any analysis of the region it belongs to, 0 means the barrier should not included (_e.g._ this column might be 0 if a barrier is a dam that cannot be replaced or if a landowner does not want it in the data set).
-
-The middle rows of the table has columns that describe restoration targets, described in the next section.
+There may be additional data that can be used by a client, for example a barrier type (tide gate, culvert, _etc_) or a descriptive name ("Jones Farm").
 
 ## Targets
 
-Each time we run OpitPass we give it a budget value.  It will return the IDs of a set of barriers that provide the most benefit for that budget.  The barriers it chooses are based on our goals.  If the goal is to improve fish migration, the benefits will be an increase in the amount of river habitat in the region upstream from a barrier.  If the goal is to protect farmland from flooding, the benefits will be an increase in the amount of acreage protected.
+Stakeholders can have several different goals for a restoration project.
+They may want to improve fish passage, or protect farmland or other infrastructure.
+Within these general categories are more specific goals.
+Different species of fish might find it easier to get past a barrier.
+Tide gates set up to protect infrastructure might have different capabilities for farms, roads, or buildings.
 
-The general term for these goals is **restoration target**, or simply "target".  A file named `targets.csv` contains descriptions of targets that can be used by the server.  The file has one row per target.  The columns in the file are:
+Descriptions of targets are also kept in tables, with one row for each target.
+The columns of this table describe the attributes of each target:
 
-- `abbrev`, a unique two-letter target ID (which will also be used in the column mapping table, described in the next section)
-- `long`, a string that is displayed in the GUI shown by a server to allow users to choose targets to use
-- `short`, a shorter target name that will be used in tables and plots
-- `label`, a string with units to use on axes in plots
-- `infra`, either True or False, depending on whether this target is for infrastructure such as buildings or farm land (True) or fish migration (False)
+* the target name, typically the name of fish species ("Coho Salmon") or a type of infrastructure ("Roads & Railroads")
+* a unique two-letter identifier, often an abbreviation of the target name ("CO", "RR")
+* a shortened name used in output tables ("Coho", "Roads")
+* a descriptive name used to label plots; this name should include units ("Potential Habitat (miles)" or "Roads Protected (miles)")
 
-## Column Maps
+## Passability
 
-In order to use targets we need to quantify the benefits of repairing or replacing barriers.  We do this by including three columns in the barrier table for each target:
+When OptiPass is searching for the most effective combination of barriers to replace for a given amount of money it needs to know what the potential gains are for replacing a barrier.
+This is where the concept of **passability** is used.
 
-- The **habitat** column is the size of the area immediately upstream from a barrier.  For fish migration targets, habitat could be expressed as the number of river miles between a barrier and the barrier(s) immediately upstream.  If the goal is to protect farmland, habitat could be measured in acres.
-- The *passability* of a barrier is a measure of how much habitat is available upstream from the barrier.  It is represented by a number between 0 (no habitat is available upstream) to 1 (all habitat upstream is reachable).  The **pre-mitigation passability** column in the table represents the current passability, before any restoration is done.
-- The third column is another passability value, the **post-mitigation passability**, which is the potential passability after replacing or repairing the barrier.
+Every barrier has some effect on each target.
+The relevant information is
 
-A data set can have any number of targets.  Each target is a separate group of three columns in the table.
+* the **habtitat** immediately upstream from the barrier, up to the next barrier if there is one, or to the end of the river
+* the current level of passability (abbreviated as **prepass**), represented by a number between 0 (completely blocked) and 1 (totally passable)
+* the potential level of passability if the barrier is repaired or replaced (abbreviated **postpass**), also a number between 0 and 1
 
-A column map table connects column descriptions shown to users (from the targets table) to quantified benefits (in the barriers table).  The table has one row for each target.  The first column is the target ID (the two-letter abbreviation from the targets table).  The remaining columns are the names of columns in the barriers table that have the habitat and passability values for the target.
+For fish targets habitat is the number of river miles above the barrier. This can be different for each species, _e.g._ a river can be a better food source or better spawning grounds for different species.
+
+For infrastructure targets we still use the term "habitat" even though the meaning of this attribute will not be the same.  For buildings the "habitat" value is the number of buildings protected, for farmland it would be the number of acres, and so on.
+
+In order to do calculations that combine different types of targets the tables also include a **scaled habitat** value, where the different types of habitat numbers have been converted to a common scale.
+The scaled values are given to OptiPass so it can compare targets of all types.  The original unscaled values are used in plots and output tables.
+
+## Projects
+
+The data managed by the server can be organized into separate projects.
+The server comes with a **demo project** that has the example data from the _OptiPass User Manual_.  Users can add their own data for actual river systems in one or more additional projects. For example, a project named **oregon** has descriptions of over 1000 tide gates in 10 river systems on the Oregon coast.
+
+Projects not only include the barrier data but also formatting information used by a client.
+This includes geographic coordinates so barriers can be plotted on a map and various descriptions in HTML files that can be displayed by a graphical user interface.
+
+Detailed instructions for how to format barrier files, target descriptions, passability tables, and project descriptions can be found in [Installation and Configuration](install.md).
 
 ## Example
 
-The small river system used as an example in the OptiPass user manual has six barriers, named *A* through *F*.  *A* is at the mouth of the river, and the rest are all upstream from *A*:
+The small river system used as an example in the OptiPass user manual has six barriers, named `A` through `F`.  `A` is at the mouth of the river, and the rest are all upstream from `A`:
 
 ![image-20240728103324448](./assets/image-20240728103324448.png)
 
-At each node $p^0$ is the pre-mitigation passability, $c$ is the cost to repair the barrier, and $h$ is the habitat (in river kilometers).  In this example barrier _D_ is a natural barrier that cannot be replaced, so there is no cost associated with this node.
+At each barrier _p⁰_ is the pre-mitigation (prepass) value, _c_ is the cost to repair the barrier, and _h_ is the habitat (in river kilometers) directly upriver from the barrier.  In this example barrier `D` is a natural barrier that cannot be replaced, so there is no cost associated with this node.
 
-The figure above shows values for only one target.  Later in the manual there is an example that has a second target.  We put the data for both targets in our barrier file.  Columns `HAB1`, `PRE1`, and `POST1` are for the first target, and `HAB2`, `PRE2`, and `POST2` are for the second target.  The final data set is in `static/barriers/demo/barriers.csv` (shown here as a table to make it more readable):
+In order to show how barriers can be organized into regions and displayed in a GUI we put the barriers on an imaginary map and assigned them to two different rivers.  The barrier file has these columns (plus a few more not shown here):
 
-|  BARID | REGION | DSID | HAB1 | PRE1 | POST1 | HAB2 | PRE2 | POST2 | COST | NPROJ  |
-|  ----- | ------ | ---- | ---- | ---- | ----- | ---- | ---- | ----- | ---- | -----  |
-|  A | Test1 | NA | 2.1 | 0.4 | 1.0 | 1.68 | 0.6 | 1.0 | 250 | 1  |
-|  B | Test1 | A | 0.9 | 0.0 | 1.0 | 0.72 | 0.0 | 1.0 | 120 | 1  |
-|  C | Test1 | B | 4.3 | 0.3 | 1.0 | 3.44 | 0.45 | 1.0 | 70 | 1  |
-|  D | Test1 | A | 1.7 | 0.5 | NA | 1.36 | 0.75 | NA | NA | 0  |
-|  E | Test1 | D | 1.2 | 0.2 | 1.0 | 0.96 | 0.3 | 1.0 | 100 | 1  |
-|  F | Test1 | D | 0.5 | 0.1 | 1.0 | 0.40 | 0.15 | 1.0 | 50 | 1  |
+| ID | region | DSID | cost | X | Y |
+| -- | ------ | ---- | ---- | - | - |
+| A | Trident  | NA | 250000 | 330 | 202 |
+| B | Red Fork | A |  120000 | 235 | 230 |
+| C | Red Fork | B |  70000 | 148 | 220 |
+| D | Trident  | A |  NA | 195 | 335 |
+| E | Trident  | D |  100000 | 100 | 440 |
+| F | Trident  | D |  50000 | 125 | 450 |
 
-Barrier _D_ is the natural barrier that can't be replaced.  The `NPROJ` column is 0, and it has no cost or post-mitigation values since they aren't used.
+The figure above shows values for only one target.  Later in the manual there is an example that has a second target.  We put the data for both targets in a passability table:
 
-The target file for this data set assigns the IDs `T1` and `T2` to the two targets.  For this simple example we just gave them short names and left the other fields blank.  The target file in`static/targets/demo/targets.csv` looks like this:
+| ID | HAB1 | PRE1 | POST1 | HAB2 | PRE2 | POST2 |
+| -- | ---- | ---- | ----- | ---- | ---- | ----- |
+| A | 2.1 | 0.4 | 1.0 | 1.68 | 0.6 | 1.0 |
+| B | 0.9 | 0.0 | 1.0 | 0.72 | 0.0 | 1.0 |
+| C | 4.3 | 0.3 | 1.0 | 3.44 | 0.45 | 1.0 |
+| D | 1.7 | 0.5 | NA | 1.36 | 0.75 | NA |
+| E | 1.2 | 0.2 | 1.0 | 0.96 | 0.3 | 1.0 |
+| F | 0.5 | 0.1 | 1.0 | 0.40 | 0.15 | 1.0 |
 
-| abbrev | long | short   | label | infra |
-| ------ | ---- | ------- | ----- | ----- |
-| T1     |      | Target1 |       |       |
-| T2     |      | Target2 |       |       |
+> _Note: the barrier table and passability table have the same rows and row labels, so all this information could go in a single table.  We split them into two tables to make it easier to keep track of passability values._
 
-Finally, to connect the target descriptions in the target file to the quantified benefits in the barrier file we have the following column name mapping (`static/colnames/demo/colnames.csv`):
+The two targets in the manual are referred to simply as "T1" and "T2", but we put them in a table to show how longer descriptions are represented:
 
-|  abbrev | habitat | prepass | postpass |
-|  ------ | ------- | ------- | -------- |
-|  T1 | HAB1 | PRE1 | POST1 |
-|  T2 | HAB2 | PRE2 | POST2 |
+| abbrev | long | short | label |
+| ------ | ---- | ----- | ----- |
+| T1 | Target 1 | Targ1 | Target 1 (km) |
+| T2 | Target 2 | Targ2 | Target 2 (km) |
 
-This tells the server to find data for target `T1` in columns `HAB1`, `PRE1`, and `POST`, and the data for target `T2` are in `HAB2`, `PRE2`, and `POST2`.
+The final piece of information the server needs is a table that connects the targets (described in the target table above) with their passability values (names of columns in the passability table):
 
-## Running OptiPass with the Example Data
+|  abbrev | habitat | prepass | postpass | unscaled |
+|  ------ | ------- | ------- | -------- | -------- |
+|  T1 | HAB1 | PRE1 | POST1 | HAB1 |
+|  T2 | HAB2 | PRE2 | POST2 | HAB2 |
 
-To run OptiPass with the sample data, send a GET request to the server, with the following options:
+This tells the server to find data for target `T1` in columns `HAB1`, `PRE1`, and `POST1`, and the data for target `T2` are in `HAB2`, `PRE2`, and `POST2`.
 
-- use "demo" as the project name
+Since the demo project does not have scaled data (habitat for both targets is defined in terms of river miles) the name in the `unscaled` column is the same as the name in the `habitat` column.
+For a data set with scaled habitats there would be four columns for each target in the passability table and the column name table would refer to all four names.
 
-- use "Test1" as the region name
-
-- use "T1", "T2", or both as the target name
-
-
-If testing on the local machine the request will look something like this:
-
-```
-$ curl localhost:8000/optipass?project=demo&regions=Test1&targets=T1,T2&...
-```
-
-where the remaining arguments specify budget levels.
-
-## A Note About Scaled Data
-
-A real data set, such as the barrier file for the Oregon Coast, can have a combination of fish passage targets and infrastructure targets.  The units for fish passage are river miles (or kilometers or any other linear measure).  However, the units for the other targets can be quite different:  acres or hectares or other measures of land area for farm land, or miles for roads, or number of buildings.
-
-In order to consider all of these kinds of data in a single optimization run, the units need to be scaled before they are saved in the habitat columns in the barrier file.  To allow modelers to save the original unscaled data, the data file formats have additional columns not described above:
-
-- there are four columns for each target, where the additional column is for the unscaled data in its original units; this column is not used by OptiPass, but is there so it can be used for other purposes
-- there is an optional column in the colnames table to hold the name of the unscaled data
-
-## 

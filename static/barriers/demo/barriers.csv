@@ -1,7 +1,7 @@
 ID,region,DSID,name,cost,X,Y,NPROJ,comment
-A,Trident,NA,,250000,330,202,1,
-B,Red Fork,A,,120000,235,230,1,
-C,Red Fork,B,,70000,148,220,1,
-D,Trident,A,,NA,195,335,0,
-E,Trident,D,,100000,100,440,1,
-F,Trident,D,,50000,125,450,1,
+A,Trident,NA,Maidenpool,250000,330,202,1,
+B,Red Fork,A,Harroway,120000,235,230,1,
+C,Red Fork,B,Riverrun,70000,148,220,1,
+D,Trident,A,Eyrie Falls,NA,195,335,0,waterfall
+E,Trident,D,Twin 1,100000,100,440,1,
+F,Trident,D,Twin 2,50000,125,450,1,
