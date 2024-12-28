@@ -360,7 +360,6 @@ class OptiPass:
             cp = self._ah(t, df) * self.weights[i]
             wph += cp
             col = pd.DataFrame({t.name: cp})
-            print(col)
             self.summary = pd.concat([self.summary, col], axis=1)
             gain = self._gain(t.name, t, df)
             mcol = df[t.unscaled]
