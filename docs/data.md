@@ -1,4 +1,4 @@
-# Data
+# Data Models
 
 The three main types of data managed by the server are **barriers**, **targets**, and **passability**.
 
@@ -57,6 +57,8 @@ The scaled values are given to OptiPass so it can compare targets of all types. 
 The data managed by the server can be organized into separate projects.
 The server comes with a **demo project** that has the example data from the _OptiPass User Manual_.  Users can add their own data for actual river systems in one or more additional projects. For example, a project named **oregon** has descriptions of over 1000 tide gates in 10 river systems on the Oregon coast.
 
+> _The tables for the Oregon project are used in some examples but are not included in the GitHub repo._
+
 Projects not only include the barrier data but also formatting information used by a client.
 This includes geographic coordinates so barriers can be plotted on a map and various descriptions in HTML files that can be displayed by a graphical user interface.
 
@@ -92,7 +94,7 @@ The figure above shows values for only one target.  Later in the manual there is
 | E | 1.2 | 0.2 | 1.0 | 0.96 | 0.3 | 1.0 |
 | F | 0.5 | 0.1 | 1.0 | 0.40 | 0.15 | 1.0 |
 
-> _Note: the barrier table and passability table have the same rows and row labels, so all this information could go in a single table.  We split them into two tables to make it easier to keep track of passability values._
+> _The barrier table and passability table have the same rows and row labels, so all this information could go in a single table.  We split them into two tables to make it easier to keep track of passability values._
 
 The two targets in the manual are referred to simply as "T1" and "T2", but we put them in a table to show how longer descriptions are represented:
 

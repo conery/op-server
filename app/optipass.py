@@ -59,7 +59,10 @@ def run_optipass(
 
 class OptiPass:
     '''
-    The entry point that runs OptiPass (OP) has parameters that specify how many 
+    An instance of this class has all the data and methods required to respond
+    to an `optipass` request.
+    
+    The entry point that runs OptiPass has query parameters that specify how many 
     budget levels to explore.  We need to run OptiPass.exe once for each budget
     level, then collect the results.
 

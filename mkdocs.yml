@@ -3,6 +3,9 @@ site_name: OptiPass Server
 theme:
   name: "readthedocs"
 
+extra:
+  version: Version 1.0.1
+
 extra_css:
   - css/tidegates.css
   
