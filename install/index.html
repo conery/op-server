@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Installation - OptiPass Server</title>
+    <title>Installation and Configuration - OptiPass Server</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,7 +14,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Installation";
+        var mkdocs_page_name = "Installation and Configuration";
         var mkdocs_page_input_path = "install.md";
         var mkdocs_page_url = null;
       </script>
@@ -33,7 +33,10 @@
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
           <a href=".." class="icon icon-home"> OptiPass Server
-        </a><div role="search">
+        </a>
+        <div class="version">
+          Version 1.0.1
+        </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
@@ -43,20 +46,48 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Home</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="..">REST Server for OptiPass</a>
+                  <li class="toctree-l1"><a class="reference internal" href="..">A REST Server for OptiPass™</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data Models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Installation</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation and Configuration</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#set-up-a-windows-server">Set Up a Windows Server</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-the-python-modules">Install the Python Modules</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#install-optipass">Install OptiPass</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#add-data-files-to-the-static-directory">Add Data Files to the static Directory</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#barriers-directory">barriers Directory</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#barrierscsv">barriers.csv</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#passabilitycsv">passability.csv</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#colnames-directory">colnames Directory</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#html-directory">html Directory</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#maps-directory">maps Directory</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#targets-directory">targets Directory</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data Files</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../modules/">Modules</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../tests/">Tests</a>
@@ -77,7 +108,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Installation</li>
-      <li class="breadcrumb-item active">Installation</li>
+      <li class="breadcrumb-item active">Installation and Configuration</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -86,14 +117,361 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="installation">Installation</h1>
-<p>TBD</p>
+                <h1 id="installation-and-configuration">Installation and Configuration</h1>
+<h2 id="set-up-a-windows-server">Set Up a Windows Server</h2>
+<p>Since OptiPass is a Windows application it must be run from a Windows system.
+The easiest way to set up a new server is to create a Windows VM at Amazon Web Services or any cloud based hosting service.</p>
+<p>The OptiPass Server is written entirely in Python.
+It uses a library named FastAPI to create a RESTful web service.
+When you start the program FastAPI will start up a web server (named Uvicorn) and have it listen for connections, by default using port 8000.</p>
+<p>You could then open up that port on your system so the OptiPass Client (or any other application) could connect to your server.
+However, the simple web server that comes with FasstAPI is very rudimentary.
+Instead, the developers of FastAPI recommend installing an "industrial strength" server like Nginx or Apache and connecting to Uvicorn with a reverse proxy.</p>
+<p><img alt="image-20240728103324448" src="../assets/rest_client_and_server.png" /></p>
+<p>One of the advantages of Nginx or Apache is that they can handle encrypted connections using HTTPS.</p>
+<h2 id="install-the-python-modules">Install the Python Modules</h2>
+<p>Install Python and Pip (the Package Installer for Python).  You can use any version of Python later than 3.11.1.</p>
+<p>The easiest way to install the server is to tell Pip to get the code from GitHub.  Start a Powershell window, create a directory where you want to install the code, and then type this command from that directory:</p>
+<pre><code class="language-powershell">&gt; python -m pip install https://github.com/conery/op-server.git
+</code></pre>
+<p>As an alternative, clone the repo:</p>
+<pre><code class="language-powershell">&gt; gh repo clone conery/op-server
+</code></pre>
+<p>Then <code>cd</code> to the new repo and type this command (note the period at the end of the line):</p>
+<pre><code class="language-powershell">&gt; python -m pip install .
+</code></pre>
+<h2 id="install-optipass">Install OptiPass</h2>
+<p>Make a new folder named <code>bin</code> in the repo.
+Obtain a copy of <code>.exe</code> file for OptiPass from EcoTelligence LLC or another source.
+Make sure it's the <strong>command line</strong> executable, not the GUI version.
+It should be named <code>OptiPassMain.exe</code>.
+Put this file in the <code>bin</code> folder.</p>
+<h2 id="add-data-files-to-the-static-directory">Add Data Files to the <code>static</code> Directory</h2>
+<p>The server organizes data according to <strong>projects</strong>.
+Each project can have its own barrier data, restoration targets, and so on.</p>
+<p>All of this data is located in the <code>static</code> folder in the repo.
+Inside that folder are six subfolders:</p>
+<pre><code>./static
+├── barriers
+├── colnames
+├── html
+├── images
+├── maps
+└── targets
+</code></pre>
+<p>Inside these folders are further subfolders for the data for each project, where the name of the project matches the name of the subfolder.
+For example, if a server has data for two projects, named <code>demo</code> and <code>oregon</code> the folders would look like this:</p>
+<pre><code>./static
+├── barriers
+│   ├── demo
+│   └── oregon
+├── colnames
+│   ├── demo
+│   └── oregon
+...
+</code></pre>
+<p>The files for the demo project are useful starting points for creating your own project data.
+To add your own content, create a new folder in each area, based on the name of your project.
+Inside that folder add new CSV or HTML files, following the guidelines in this section.</p>
+<h3 id="barriers-directory"><code>barriers</code> Directory</h3>
+<p>There should be two CSV files to describe the barriers in a project:</p>
+<pre><code>barriers/
+├── demo
+│   ├── barriers.csv
+│   └── passability.csv
+</code></pre>
+<p>Both of these files should have one line for each barrier:</p>
+<ul>
+<li><code>barriers.csv</code> will have the basic information about each barrier.</li>
+<li><code>passability.csv</code> will have the habitat, prepass, and postpass values for each target for each barrier.</li>
+</ul>
+<h4 id="barrierscsv"><code>barriers.csv</code></h4>
+<p>The names of the columns in <code>barriers.csv</code> should match the names shown in the table below.</p>
+<table>
+<thead>
+<tr>
+<th>column name</th>
+<th>description</th>
+<th>note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ID</code></td>
+<td>a unique ID, composed of letters and digits</td>
+<td></td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td>geographic region name, typically the name of a river</td>
+<td></td>
+</tr>
+<tr>
+<td><code>DSID</code></td>
+<td>ID of barrier immediately downstream</td>
+<td>(1)</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>more descriptive barrier name (can be left blank)</td>
+<td></td>
+</tr>
+<tr>
+<td><code>cost</code></td>
+<td>cost to repair or replace the barrier</td>
+<td>(2)</td>
+</tr>
+<tr>
+<td><code>X</code></td>
+<td>horizontal coordinate of the barrier on the project's map</td>
+<td>(3)</td>
+</tr>
+<tr>
+<td><code>Y</code></td>
+<td>vertical coordinate of the barrier on the project's map</td>
+<td>(3)</td>
+</tr>
+<tr>
+<td><code>NPROJ</code></td>
+<td>a 1 or a 0 to indicate whether or not to include the barrier</td>
+<td>(4)</td>
+</tr>
+<tr>
+<td><code>comment</code></td>
+<td>an optional comment</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>Put "NA" in the DSID column if a barrier does not have a downstream neighbor.  Otherwise the name in this column must match an ID in another row.</li>
+<li>The units in the cost column should be number of dollars.
+The OptiPass manual uses "thousands of dollars", <em>e.g.</em> it would put 100 in the table to mean $100,000, but in this data set use the full amount and write 100000 (without commas).</li>
+<li>The coordinate values depend on the type of map.  For static maps use pixels, where (0,0) is the lower left.  For tiled maps use latitude and longitude.</li>
+<li>Put a 0 in the <code>NPROJ</code> column if a barrier cannot be repaired and should not be included in the set analyzed by OptiPass. </li>
+</ol>
+<h4 id="passabilitycsv"><code>passability.csv</code></h4>
+<p>There should be one line in <code>passability.csv</code> for each line in <code>barriers.csv</code>.
+The first column in this file should also be named <code>ID</code>, and the names in this column must match the names in <code>barriers.csv</code>.</p>
+<p>Following the ID column there should be three columns for each target (four if targets use scaled habitat values).
+The names of the columns are arbitrary but should be based on target names (the names will be used in other tables and need to be recognizable).</p>
+<p>For example, the two targets in the demo project are named T1 and T2, so natural names for the columns are HAB1, PRE1, and POST1 for the habitat, prepass, and postpass values of target T1, and HAB2, PRE2, and POST2 for the values of target T2.</p>
+<p>Here are the first few lines of <code>passability.csv</code> for the demo project:</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>HAB1</th>
+<th>PRE1</th>
+<th>POST1</th>
+<th>HAB2</th>
+<th>PRE2</th>
+<th>POST2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>2.1</td>
+<td>0.4</td>
+<td>1.0</td>
+<td>1.68</td>
+<td>0.6</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>B</td>
+<td>0.9</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>0.72</td>
+<td>0.0</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<p>If a project has scaled habitat values include a fourth column for each target and give it an appropriate name.
+For example, if the demo project had scaled values, the extra columns might be called sHAB1 and sHAB2.</p>
+<p>A <code>passability.csv</code> file can be made a bit smaller if two or more columns have the same values.
+For example, the postpass columns in the demo project (POST1 and POST2) both have 1.0 for in every row, meaning that after repair all the gates are fully functional.</p>
+<p>In that case, the table can be simplified by dropping one of the columns and renaming ther other one to POST (without a target number).</p>
+<p>The only requirement is that every name that appears in a mapping file (<code>colnames.csv</code>, described below) has to appear as a column somewhere in the passability table.</p>
+<h3 id="colnames-directory"><code>colnames</code> Directory</h3>
+<p>The structure of this directory depends on whether a project has more than one set of passability values for targets.
+This is what the directory looks like on a server that has two projects, one for the demo data and one for the Oregon coast:</p>
+<pre><code>colnames/
+├── demo
+│   └── colnames.csv
+└── oregon
+    └── climate
+        ├── current.csv
+        └── future.csv
+</code></pre>
+<p>The fact that there is only one file in the <code>demo</code> folder means there is only one way to associate target names with passability values, and it's in the file named <code>colnames.csv</code>.</p>
+<p>The subdirectory under <code>oregon</code> means users will have a choice, named "climate" (using the name of the subdirectory), and can pick which set of passability values to use.</p>
+<p>Regardless of how the directory is structured, all the CSV files have the same information.
+There will be one row for each target, and the contents will be names of columns from the <code>passability.csv</code> file for the project.</p>
+<p>Here is the file for the demo project:</p>
+<table>
+<thead>
+<tr>
+<th>abbrev</th>
+<th>habitat</th>
+<th>prepass</th>
+<th>postpass</th>
+<th>unscaled</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T1</td>
+<td>HAB1</td>
+<td>PRE1</td>
+<td>POST1</td>
+<td>HAB1</td>
+</tr>
+<tr>
+<td>T2</td>
+<td>HAB2</td>
+<td>PRE2</td>
+<td>POST2</td>
+<td>HAB2</td>
+</tr>
+</tbody>
+</table>
+<p>The first row says the passability values for target T1 can be found in columns named HAB1, PRE1, and POST1 in the project's <code>passability.csv</code> file. </p>
+<p>If a project uses scaled habitat values, put the name of the scaled habitat in the <code>habitat</code> column and the name of the original unscaled values in the <code>unscaled</code> column.</p>
+<p>The demo project does not have scaled habitats, so the name in the <code>unscaled</code> column is just the same as the name in the <code>habitat</code> column.</p>
+<h3 id="html-directory"><code>html</code> Directory</h3>
+<p>The <code>html</code> directory has static content the client will display in a GUI.</p>
+<pre><code>html
+├── demo
+│   ├── help.html
+│   └── welcome.html
+</code></pre>
+<p>The Welcome tab in the GUI describes a project and gives the overall description of the workflow required to use OptiPass.</p>
+<p>A Help tab has detailed instructions of how to use each "widget" to enter optimization parameters.</p>
+<p>Each project can tailor the contents of these files to fit their data.</p>
+<h3 id="maps-directory"><code>maps</code> Directory</h3>
+<p>The <code>maps</code> directory tells a client how to draw the map for the project.  This is the <code>maps</code> directory for the demo project:</p>
+<pre><code>maps
+├── demo
+│   ├── Riverlands.png
+│   └── mapinfo.json
+</code></pre>
+<p>Every project needs a <code>mapinfo.json</code> file.
+This is the file for the demo project:</p>
+<pre><code>{
+    &quot;map_type&quot;: &quot;StaticMap&quot;,
+    &quot;map_file&quot;: &quot;Riverlands.png&quot;,
+    &quot;map_title&quot;: &quot;The Riverlands&quot;,
+    &quot;map_tools&quot;: [&quot;hover&quot;]
+}
+</code></pre>
+<p>The <code>map_type</code> entry can be either StaticMap or TiledMap.</p>
+<ul>
+<li>A StaticMap is simply a PNG image.  If a project has a StaticMap there must also be a <code>map_file</code> entry in the JSON file and a PNG file of that name should also be placed in the <code>maps</code> directory.</li>
+<li>If the map type is TiledMap the client will connect to a tile server to draw the map.  Map coordinates are taken from the barrier file, and the map that appears in the GUI will be big enough to include all barriers.</li>
+</ul>
+<p>The <code>map_title</code> and <code>map_tools</code> entries are used by the client.
+The tools are icons drawn at the bottom of the map that allow the user to interact with the map, <em>e.g.</em> to zoom in or move around.
+The items that can appear in the <code>map_tools</code> list are:</p>
+<ul>
+<li><code>hover</code>, which will display the ID and other information about a barrier when the user moves their mouse over a barrier on the map</li>
+<li><code>wheel_zoom</code> allows the user to zoom in or out</li>
+<li><code>pan</code> allows the user to move the map left/right or up/down</li>
+<li><code>reset</code> is a button that restors a map to the original coordinates after panning or zooming</li>
+</ul>
+<h3 id="targets-directory"><code>targets</code> Directory</h3>
+<p>The <code>targets</code> directory for a project needs two files:</p>
+<pre><code>targets
+├── demo
+│   ├── layout.txt
+│   └── targets.csv
+</code></pre>
+<p>The CSV file has entries that describe the restoration targets for the project.
+The file should have the following columns:</p>
+<table>
+<thead>
+<tr>
+<th>column name</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>abbrev</code></td>
+<td>a unique two-letter ID for the target</td>
+</tr>
+<tr>
+<td><code>long</code></td>
+<td>the full name of the target</td>
+</tr>
+<tr>
+<td><code>short</code></td>
+<td>a shorter name used in output tables</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>a name to use in plots, which should include units</td>
+</tr>
+<tr>
+<td><code>infra</code></td>
+<td>True if the target has multiple colname mappings</td>
+</tr>
+</tbody>
+</table>
+<p>Here are two examples from the Oregon Coast project (which has more interesting targets than the demo data):</p>
+<table>
+<thead>
+<tr>
+<th>abbrev</th>
+<th>long</th>
+<th>short</th>
+<th>label</th>
+<th>infra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CO</td>
+<td>Coho Streams</td>
+<td>Coho</td>
+<td>Habitat Potential (miles)</td>
+<td>False</td>
+</tr>
+<tr>
+<td>AG</td>
+<td>Agriculture</td>
+<td>Agric</td>
+<td>Farmland Potentially Protected (acres)</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+<p>The layout file is used by the client to display the GUI elements that let users select targets.
+As an example, the Oregon project has ten targets, six for fish species and four for infrastructure.
+If we want the GUI to arrange them in two columns, with fish targets (which have names CO, CH, ST, ...) in the left column and infrastructure targets (named AG, RR, BL, ...) on the right, the layout file simply lists the names in the order they should be displayed:</p>
+<pre><code>CO AG
+CH RR
+ST BL
+...
+</code></pre>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="REST Server for OptiPass"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../data/" class="btn btn-neutral float-right" title="Data Files">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../api/" class="btn btn-neutral float-left" title="API"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../modules/" class="btn btn-neutral float-right" title="Modules">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -116,10 +494,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../api/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../data/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../modules/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

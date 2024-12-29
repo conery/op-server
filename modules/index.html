@@ -33,7 +33,10 @@
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
           <a href=".." class="icon icon-home"> OptiPass Server
-        </a><div role="search">
+        </a>
+        <div class="version">
+          Version 1.0.1
+        </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
@@ -43,31 +46,33 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Home</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="..">REST Server for OptiPass</a>
+                  <li class="toctree-l1"><a class="reference internal" href="..">A REST Server for OptiPass™</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data Models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Installation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation and Configuration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data Files</a>
-                  </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Modules</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#mainpy">main.py</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#initialization">Initialization</a>
+    <li class="toctree-l3"><a class="reference internal" href="#init">init</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#read_csv_file">read_csv_file</a>
+    <li class="toctree-l3"><a class="reference internal" href="#read_text_file">read_text_file</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#projects">projects</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#regions">regions</a>
-    </li>
     <li class="toctree-l3"><a class="reference internal" href="#barriers">barriers</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mapinfo">mapinfo</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#targets">targets</a>
     </li>
@@ -75,11 +80,33 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#optipass">optipass</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#tables">tables</a>
-    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#optipasspy">optipass.py</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#optipass_is_installed">optipass_is_installed</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#run_optipass">run_optipass</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#optipass_1">OptiPass</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.create_input_frame">create_input_frame</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.create_paths">create_paths</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.path_from">path_from</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.set_target_weights">set_target_weights</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.run">run</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.collect_results">collect_results</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.parse_output">parse_output</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#app.optipass.OptiPass.add_potential_habitat">add_potential_habitat</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -111,13 +138,13 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="modules">Modules</h1>
-<p>The source code is in a folder named <code>app</code>.  There are only two source files in the folder, one (<code>main.py</code>) for the FastAPI application and one for running (<code>optipass.py</code>) that provides an abstract interface for running OptiPass</p>
+<p>The source code is in a folder named <code>app</code>.  There are only two source files in the folder, one (<code>main.py</code>) for the FastAPI application and one (<code>optipass.py</code>) that provides an abstract interface for running OptiPass.</p>
 <pre><code>app
 ├── main.py
 └── optipass.py
 </code></pre>
 <h2 id="mainpy"><code>main.py</code></h2>
-<h4 id="initialization">Initialization</h4>
+<h3 id="init"><code>init</code></h3>
 
 
 <div class="doc doc-object doc-function">
@@ -133,12 +160,7 @@ names of projects, a dictionary of region names for each project.</p>
 
             <details class="quote">
               <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
@@ -160,27 +182,71 @@ names of projects, a dictionary of region names for each project.</p>
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Define global variables used in the rest of the application:</span>
 <span class="sd">    paths to static data and names of static data files, a list of </span>
 <span class="sd">    names of projects, a dictionary of region names for each project.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">global</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span><span class="p">,</span> <span class="n">TARGETS</span><span class="p">,</span> <span class="n">TARGET_FILE</span><span class="p">,</span> <span class="n">COLNAMES</span><span class="p">,</span> <span class="n">COLNAME_FILE</span>
+    <span class="k">global</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span>
+    <span class="k">global</span> <span class="n">MAPS</span><span class="p">,</span> <span class="n">MAPINFO_FILE</span>
+    <span class="k">global</span> <span class="n">TARGETS</span><span class="p">,</span> <span class="n">TARGET_FILE</span><span class="p">,</span> <span class="n">LAYOUT_FILE</span>
+    <span class="k">global</span> <span class="n">COLNAMES</span><span class="p">,</span> <span class="n">COLNAME_FILE</span>
+    <span class="k">global</span> <span class="n">HTMLDIR</span><span class="p">,</span> <span class="n">IMAGEDIR</span>
+
+    <span class="n">MAPS</span> <span class="o">=</span> <span class="s1">&#39;static/maps&#39;</span>
+    <span class="n">MAPINFO_FILE</span> <span class="o">=</span> <span class="s1">&#39;mapinfo.json&#39;</span>
 
     <span class="n">BARRIERS</span> <span class="o">=</span> <span class="s1">&#39;static/barriers&#39;</span>
     <span class="n">BARRIER_FILE</span> <span class="o">=</span> <span class="s1">&#39;barriers.csv&#39;</span>
 
     <span class="n">TARGETS</span> <span class="o">=</span> <span class="s1">&#39;static/targets&#39;</span>
     <span class="n">TARGET_FILE</span> <span class="o">=</span> <span class="s1">&#39;targets.csv&#39;</span>
+    <span class="n">LAYOUT_FILE</span> <span class="o">=</span> <span class="s1">&#39;layout.txt&#39;</span>
 
     <span class="n">COLNAMES</span> <span class="o">=</span> <span class="s1">&#39;static/colnames&#39;</span>
     <span class="n">COLNAME_FILE</span> <span class="o">=</span> <span class="s1">&#39;colnames.csv&#39;</span>
 
+    <span class="n">HTMLDIR</span> <span class="o">=</span> <span class="s1">&#39;static/html&#39;</span>
+    <span class="c1"># IMAGEDIR = &#39;static/images&#39;</span>
+
     <span class="k">global</span> <span class="n">project_names</span><span class="p">,</span> <span class="n">region_names</span>
 
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+        <span class="n">style</span><span class="o">=</span><span class="s1">&#39;{&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{message}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">RichHandler</span><span class="p">(</span><span class="n">markup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rich_tracebacks</span><span class="o">=</span><span class="kc">True</span><span class="p">)],</span>
+    <span class="p">)</span>
+
     <span class="n">project_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="n">BARRIERS</span><span class="p">)</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()]</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;projects: </span><span class="si">{</span><span class="n">project_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="n">region_names</span> <span class="o">=</span> <span class="p">{</span> <span class="p">}</span>
     <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
@@ -188,11 +254,12 @@ names of projects, a dictionary of region names for each project.</p>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">barrier_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>     <span class="c1"># skip the header</span>
             <span class="n">region_names</span><span class="p">[</span><span class="n">project</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="n">rec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">f</span> <span class="p">}</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;regions: </span><span class="si">{</span><span class="n">region_names</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
 
-</div><h3 id="read_csv_file"><code>read_csv_file</code></h3>
+</div><h3 id="read_text_file"><code>read_text_file</code></h3>
 
 
 <div class="doc doc-object doc-function">
@@ -202,7 +269,7 @@ names of projects, a dictionary of region names for each project.</p>
 
     <div class="doc doc-contents first">
 
-      <p>Read a CSV file from one of the static subdirectories.</p>
+      <p>Read a text file from one of the static subdirectories.</p>
 
 
 <table class="field-list">
@@ -217,6 +284,7 @@ names of projects, a dictionary of region names for each project.</p>
         <ul class="first simple">
             <li>
               <b><code>project</code></b>
+                  (<code>str</code>)
               –
               <div class="doc-md-description">
                 <p>the project name</p>
@@ -224,6 +292,7 @@ names of projects, a dictionary of region names for each project.</p>
             </li>
             <li>
               <b><code>area</code></b>
+                  (<code>str</code>)
               –
               <div class="doc-md-description">
                 <p>the data area (barriers, targets, colnames)</p>
@@ -231,6 +300,7 @@ names of projects, a dictionary of region names for each project.</p>
             </li>
             <li>
               <b><code>fn</code></b>
+                  (<code>str</code>)
               –
               <div class="doc-md-description">
                 <p>the name of the file within the data area</p>
@@ -253,6 +323,7 @@ names of projects, a dictionary of region names for each project.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
+                  <code>str</code>
               –
               <div class="doc-md-description">
                 <p>the contents of the file, as a single string</p>
@@ -265,23 +336,27 @@ names of projects, a dictionary of region names for each project.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_csv_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">read_text_file</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">area</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Read a CSV file from one of the static subdirectories.</span>
+<span class="sd">    Read a text file from one of the static subdirectories.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        project:  the project name</span>
@@ -292,6 +367,10 @@ names of projects, a dictionary of region names for each project.</p>
 <span class="sd">        the contents of the file, as a single string</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">area</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span> <span class="o">/</span> <span class="n">fn</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;reading text file: </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
@@ -322,6 +401,7 @@ names of projects, a dictionary of region names for each project.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
+                  <code>list[str]</code>
               –
               <div class="doc-md-description">
                 <p>a list of the names of the projects (datasets) managed by the server.</p>
@@ -334,16 +414,16 @@ names of projects, a dictionary of region names for each project.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/projects&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">projects</span><span class="p">():</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/projects&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">projects</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Respond to GET requests of the form `/projects`.</span>
 
@@ -351,63 +431,6 @@ names of projects, a dictionary of region names for each project.</p>
 <span class="sd">        a list of the names of the projects (datasets) managed by the server.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">project_names</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div><h3 id="regions"><code>regions</code></h3>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-    <div class="doc doc-contents first">
-
-      <p>Respond to GET requests of the form <code>/regions/P</code> where P is a project name.</p>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Returns:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              –
-              <div class="doc-md-description">
-                <p>a list of regions (river names) for a project, taken from the second column of the barrier file for the project.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-            <details class="quote">
-              <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/regions/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">regions</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Respond to GET requests of the form `/regions/P` where P is a project name.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        a list of regions (river names) for a project, taken from the second column of the barrier file for the project.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;regions&#39;</span><span class="p">:</span> <span class="n">region_names</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">project</span><span class="p">)}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -436,6 +459,7 @@ names of projects, a dictionary of region names for each project.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
+                  <code>dict</code>
               –
               <div class="doc-md-description">
                 <p>the barrier data file for a project, as one long string.</p>
@@ -448,31 +472,113 @@ names of projects, a dictionary of region names for each project.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/barriers/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">barriers</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/barriers/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">barriers</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Respond to GET requests of the form `/barriers/P` where P is a project name.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        the barrier data file for a project, as one long string.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
-        <span class="n">barriers</span> <span class="o">=</span> <span class="n">read_csv_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">barriers</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;barriers&#39;</span><span class="p">:</span> <span class="n">barriers</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;barriers: unknown project: </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">barriers</span> <span class="o">=</span> <span class="n">read_text_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;barriers&#39;</span><span class="p">:</span> <span class="n">barriers</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;file not found: </span><span class="si">{</span><span class="n">BARRIERS</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">BARRIER_FILE</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;server error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="mapinfo"><code>mapinfo</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Respond to GET requests of the form <code>/mapinfo/P</code> where P is a project name.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>dict</code>
+              –
+              <div class="doc-md-description">
+                <p>a dictionary (JSON format) with settings for displaying the map for a project.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/mapinfo/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">mapinfo</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to GET requests of the form `/mapinfo/P` where P is a project name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dictionary (JSON format) with settings for displaying the map for a project.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;mapinfo: unknown project: </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">read_text_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">MAPS</span><span class="p">,</span> <span class="n">MAPINFO_FILE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;mapinfo&#39;</span><span class="p">:</span> <span class="n">info</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;file not found: </span><span class="si">{</span><span class="n">MAPS</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">MAPINFO_FILE</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;server error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -487,7 +593,7 @@ names of projects, a dictionary of region names for each project.</p>
 
     <div class="doc doc-contents first">
 
-      <p>Respond to GET requests of the form <code>/barriers/P</code> where P is a project name.</p>
+      <p>Respond to GET requests of the form <code>/targets/P</code> where P is a project name.</p>
 
 
 <table class="field-list">
@@ -501,9 +607,17 @@ names of projects, a dictionary of region names for each project.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
+                  <code>dict</code>
               –
               <div class="doc-md-description">
-                <p>the barrier data file for a project, as one long string.</p>
+                <p>the CSV file containing restoration target descriptions for a project</p>
+              </div>
+            </li>
+            <li>
+                  <code>dict</code>
+              –
+              <div class="doc-md-description">
+                <p>and a plain text file containing the layout in the GUI</p>
               </div>
             </li>
         </ul>
@@ -513,31 +627,43 @@ names of projects, a dictionary of region names for each project.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/barriers/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">barriers</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/targets/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">targets</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Respond to GET requests of the form `/barriers/P` where P is a project name.</span>
+<span class="sd">    Respond to GET requests of the form `/targets/P` where P is a project name.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        the barrier data file for a project, as one long string.</span>
+<span class="sd">        the CSV file containing restoration target descriptions for a project</span>
+<span class="sd">        and a plain text file containing the layout in the GUI</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
-        <span class="n">barriers</span> <span class="o">=</span> <span class="n">read_csv_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">BARRIERS</span><span class="p">,</span> <span class="n">BARRIER_FILE</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">barriers</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;barriers&#39;</span><span class="p">:</span> <span class="n">barriers</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;targets: unknown project: </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="n">read_text_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">TARGETS</span><span class="p">,</span> <span class="n">TARGET_FILE</span><span class="p">)</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">read_text_file</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">TARGETS</span><span class="p">,</span> <span class="n">LAYOUT_FILE</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;project&#39;</span><span class="p">:</span> <span class="n">project</span><span class="p">,</span> <span class="s1">&#39;targets&#39;</span><span class="p">:</span> <span class="n">targets</span><span class="p">,</span> <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="n">layout</span><span class="p">}</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;server error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -566,6 +692,7 @@ names of projects, a dictionary of region names for each project.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
+                  <code>dict</code>
               –
               <div class="doc-md-description">
                 <p>a dictionary with two entries, the name of the mapping and the names of the colname files</p>
@@ -578,7 +705,799 @@ names of projects, a dictionary of region names for each project.</p>
 </table>
             <details class="quote">
               <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">134</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/colnames/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">colnames</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Respond to GET requests of the form `/colnames/P` where P is a project name.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dictionary with two entries, the name of the mapping and the names of the colname files</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;unknown project: </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">cname_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">COLNAMES</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span>
+        <span class="n">cname_file</span> <span class="o">=</span> <span class="n">cname_dir</span> <span class="o">/</span> <span class="n">COLNAME_FILE</span>
+        <span class="k">if</span> <span class="n">cname_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">COLNAME_FILE</span><span class="p">]}</span>
+        <span class="k">elif</span> <span class="n">cname_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">alts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cname_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">alts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;colnames/</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1"> should have exactly one folder&#39;</span>
+            <span class="n">alt_name</span> <span class="o">=</span> <span class="n">alts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">is_dir</span><span class="p">(),</span> <span class="sa">f</span><span class="s1">&#39;no directory for </span><span class="si">{</span><span class="n">alt_name</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">cnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.csv&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="n">cnames</span> <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;file not found: </span><span class="si">{</span><span class="n">cname_file</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;colnames: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="optipass"><code>optipass</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>A GET request of the form <code>/optipass/project?ARGS</code> runs OptiPass using the parameter 
+values passed in the URL.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>project</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>the name of the project (used to make path to static files)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>regions</code></b>
+                  (<code><span title="typing.Annotated">Annotated</span>[list[str], <span title="fastapi.Query">Query</span>()]</code>)
+              –
+              <div class="doc-md-description">
+                <p>comma-separated string of region names</p>
+              </div>
+            </li>
+            <li>
+              <b><code>targets</code></b>
+                  (<code><span title="typing.Annotated">Annotated</span>[list[str], <span title="fastapi.Query">Query</span>()]</code>)
+              –
+              <div class="doc-md-description">
+                <p>comma-separated string of 2-letter target IDs</p>
+              </div>
+            </li>
+            <li>
+              <b><code>budgets</code></b>
+                  (<code><span title="typing.Annotated">Annotated</span>[list[int], <span title="fastapi.Query">Query</span>()]</code>)
+              –
+              <div class="doc-md-description">
+                <p>a list with starting budget, increment, and count</p>
+              </div>
+            </li>
+            <li>
+              <b><code>weights</code></b>
+                  (<code><span title="typing.Annotated">Annotated</span>[list[int] | None, <span title="fastapi.Query">Query</span>()]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>list of ints, one for each target (optional)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>mapping</code></b>
+                  (<code><span title="typing.Annotated">Annotated</span>[list[str] | None, <span title="fastapi.Query">Query</span>()]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>project-specific target names, e.g. <code>current</code> or <code>future</code> (optional)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>tempdir</code></b>
+                  (<code><span title="typing.Annotated">Annotated</span>[str | None, <span title="fastapi.Query">Query</span>()]</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>directory that has existing results (optional, used in testing)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>dict</code>
+              –
+              <div class="doc-md-description">
+                <p>a dictionary with a status indicator and a token that can be used to fetch results.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/optipass/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">optipass</span><span class="p">(</span>
+    <span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+    <span class="n">regions</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Query</span><span class="p">()],</span> 
+    <span class="n">budgets</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Query</span><span class="p">()],</span>
+    <span class="n">targets</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Query</span><span class="p">()],</span> 
+    <span class="n">weights</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Query</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">mapping</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Query</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">tempdir</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Query</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span><span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A GET request of the form `/optipass/project?ARGS` runs OptiPass using the parameter </span>
+<span class="sd">    values passed in the URL.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        project:  the name of the project (used to make path to static files)</span>
+<span class="sd">        regions:  comma-separated string of region names</span>
+<span class="sd">        targets:  comma-separated string of 2-letter target IDs</span>
+<span class="sd">        budgets:  a list with starting budget, increment, and count</span>
+<span class="sd">        weights:  list of ints, one for each target (optional)</span>
+<span class="sd">        mapping:  project-specific target names, e.g. `current` or `future` (optional)</span>
+<span class="sd">        tempdir:  directory that has existing results (optional, used in testing)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a dictionary with a status indicator and a token that can be used to fetch results.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;project </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;regions </span><span class="si">{</span><span class="n">regions</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;budgets </span><span class="si">{</span><span class="n">budgets</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;targets </span><span class="si">{</span><span class="n">targets</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;weights </span><span class="si">{</span><span class="n">weights</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;mapping </span><span class="si">{</span><span class="n">mapping</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tempdir </span><span class="si">{</span><span class="n">tempdir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;unknown project: </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="n">barrier_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">BARRIERS</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span>
+        <span class="n">target_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">TARGETS</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span> <span class="o">/</span> <span class="n">TARGET_FILE</span>
+
+        <span class="n">cname_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">COLNAMES</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span>
+        <span class="k">if</span> <span class="n">mapping</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cname_file</span> <span class="o">=</span> <span class="n">cname_dir</span> <span class="o">/</span> <span class="n">COLNAME_FILE</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cname_file</span> <span class="o">=</span> <span class="n">cname_dir</span> <span class="o">/</span> <span class="n">mapping</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">mapping</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">.csv&#39;</span>
+
+        <span class="n">summary</span><span class="p">,</span> <span class="n">matrix</span> <span class="o">=</span> <span class="n">run_optipass</span><span class="p">(</span>
+            <span class="n">barrier_path</span><span class="p">,</span> 
+            <span class="n">target_file</span><span class="p">,</span>
+            <span class="n">cname_file</span><span class="p">,</span>
+            <span class="n">regions</span><span class="p">,</span>
+            <span class="n">budgets</span><span class="p">,</span>
+            <span class="n">targets</span><span class="p">,</span> 
+            <span class="n">weights</span><span class="p">,</span>
+            <span class="n">tempdir</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="n">summary</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(),</span>
+            <span class="s1">&#39;matrix&#39;</span><span class="p">:</span> <span class="n">matrix</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(),</span>
+        <span class="p">}</span>
+
+    <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;optipass: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">501</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;OptiPassMain.exe not found&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;server error: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h2 id="optipasspy"><code>optipass.py</code></h2>
+<h3 id="optipass_is_installed"><code>optipass_is_installed</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Make sure OptiPass is installed.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>bool</code>
+              –
+              <div class="doc-md-description">
+                <p>True if OptiPass is installed and this host can run it.</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">optipass_is_installed</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Make sure OptiPass is installed.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">       True if OptiPass is installed and this host can run it.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;./bin/OptiPassMain.exe&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;WINEARCH&#39;</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="run_optipass"><code>run_optipass</code></h3>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+    <div class="doc doc-contents first">
+
+      <p>Run OptiPass using the specified arguments.  Instantiates an OP object
+with paths to data files, calls methods that create the input file,
+run the optimizer, and gather the results.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>barrier_path</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>name of directory with CSVs files for tide gate data</p>
+              </div>
+            </li>
+            <li>
+              <b><code>target_file</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>name of a CSV file with restoration target descriptions</p>
+              </div>
+            </li>
+            <li>
+              <b><code>mapping_file</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>name of CSV file with barrier passabilities</p>
+              </div>
+            </li>
+            <li>
+              <b><code>regions</code></b>
+                  (<code>list[str]</code>)
+              –
+              <div class="doc-md-description">
+                <p>a list of geographic regions (river names) to use</p>
+              </div>
+            </li>
+            <li>
+              <b><code>budgets</code></b>
+                  (<code>list[int]</code>)
+              –
+              <div class="doc-md-description">
+                <p>a list with starting budget, budget increment, and number of budgets</p>
+              </div>
+            </li>
+            <li>
+              <b><code>targets</code></b>
+                  (<code>list[str]</code>)
+              –
+              <div class="doc-md-description">
+                <p>a list of IDs of targets to use</p>
+              </div>
+            </li>
+            <li>
+              <b><code>weights</code></b>
+                  (<code>list[int]</code>)
+              –
+              <div class="doc-md-description">
+                <p>a list of target weights</p>
+              </div>
+            </li>
+            <li>
+              <b><code>tmpdir</code></b>
+                  (<code><span title="pathlib.Path">Path</span> | None</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>name of directory that has existing results (used for testing)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>tuple</code>
+              –
+              <div class="doc-md-description">
+                <p>a tuple containing two data frames, a budget table and a gate matrix</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_optipass</span><span class="p">(</span>
+        <span class="n">barrier_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">target_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">mapping_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">budgets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+        <span class="n">weights</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">tmpdir</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Run OptiPass using the specified arguments.  Instantiates an OP object</span>
+<span class="sd">    with paths to data files, calls methods that create the input file,</span>
+<span class="sd">    run the optimizer, and gather the results.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        barrier_path: name of directory with CSVs files for tide gate data</span>
+<span class="sd">        target_file: name of a CSV file with restoration target descriptions</span>
+<span class="sd">        mapping_file: name of CSV file with barrier passabilities</span>
+<span class="sd">        regions: a list of geographic regions (river names) to use</span>
+<span class="sd">        budgets: a list with starting budget, budget increment, and number of budgets</span>
+<span class="sd">        targets: a list of IDs of targets to use</span>
+<span class="sd">        weights: a list of target weights</span>
+<span class="sd">        tmpdir: name of directory that has existing results (used for testing)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a tuple containing two data frames, a budget table and a gate matrix</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barrier_path</span><span class="p">,</span> <span class="n">target_file</span><span class="p">,</span> <span class="n">mapping_file</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">tmpdir</span><span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_paths</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">*</span><span class="n">budgets</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">op</span><span class="o">.</span><span class="n">collect_results</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h3 id="optipass_1">OptiPass</h3>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+
+    <div class="doc doc-contents first">
+
+
+      <p>An instance of this class has all the data and methods required to respond
+to an <code>optipass</code> request.</p>
+<p>The entry point that runs OptiPass has query parameters that specify how many 
+budget levels to explore.  We need to run OptiPass.exe once for each budget
+level, then collect the results.</p>
+<p>The general workflow:</p>
+<ul>
+<li>create an instance of this class, passing the constructor the parameter
+  values for the regions, targets, and budget levels</li>
+<li>call a method to generate the input file (called a "barrier file" in the
+  OP documentation) that will be read as input each time OP runs</li>
+<li>call the method that finds downstream barriers</li>
+<li>call the method that runs OP</li>
+<li>generate the output tables and plots</li>
+</ul>
+<p>All of the intermediate data needed for these steps is saved in instance vars
+of the object.</p>
+
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>barriers</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>folder with barrier definitions</p>
+              </div>
+            </li>
+            <li>
+              <b><code>tfile</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>name of file with target descriptions</p>
+              </div>
+            </li>
+            <li>
+              <b><code>mfile</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>name of file with target benefits</p>
+              </div>
+            </li>
+            <li>
+              <b><code>rlist</code></b>
+                  (<code>list[str]</code>)
+              –
+              <div class="doc-md-description">
+                <p>list of region names</p>
+              </div>
+            </li>
+            <li>
+              <b><code>tlist</code></b>
+                  (<code>list[str]</code>)
+              –
+              <div class="doc-md-description">
+                <p>list of target names</p>
+              </div>
+            </li>
+            <li>
+              <b><code>weights</code></b>
+                  (<code>list[int] | None</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>list of target weights (optional)</p>
+              </div>
+            </li>
+            <li>
+              <b><code>tmpdir</code></b>
+                  (<code>str | None</code>, default:
+                      <code>None</code>
+)
+              –
+              <div class="doc-md-description">
+                <p>path to output files (optional, used by unit tests)</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+                  <details class="quote">
+                    <summary>Source code in <code>app/optipass.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+        <span class="n">barriers</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">tfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">mfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> 
+        <span class="n">rlist</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+        <span class="n">tlist</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> 
+        <span class="n">weights</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+        <span class="n">tmpdir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Instantiate a new OP object.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">      barriers: folder with barrier definitions</span>
+<span class="sd">      tfile: name of file with target descriptions</span>
+<span class="sd">      mfile: name of file with target benefits</span>
+<span class="sd">      rlist: list of region names</span>
+<span class="sd">      tlist: list of target names</span>
+<span class="sd">      weights:  list of target weights (optional)</span>
+<span class="sd">      tmpdir:  path to output files (optional, used by unit tests)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">bf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">barriers</span><span class="o">/</span><span class="s1">&#39;barriers.csv&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span> <span class="o">=</span> <span class="n">bf</span><span class="p">[</span><span class="n">bf</span><span class="o">.</span><span class="n">region</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">rlist</span><span class="p">)]</span>
+
+    <span class="n">pf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">barriers</span><span class="o">/</span><span class="s1">&#39;passability.csv&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">passability</span> <span class="o">=</span> <span class="n">pf</span><span class="p">[</span><span class="n">pf</span><span class="o">.</span><span class="n">ID</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="o">.</span><span class="n">ID</span><span class="p">)]</span>
+
+    <span class="n">tf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">tfile</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;abbrev&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">t</span> <span class="ow">in</span> <span class="n">tf</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tlist</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;unknown target name in </span><span class="si">{</span><span class="n">tlist</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="o">=</span> <span class="n">tf</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">tlist</span><span class="p">)]</span>
+
+    <span class="n">mf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">mfile</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;abbrev&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">mf</span><span class="p">[</span><span class="n">mf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">tlist</span><span class="p">)]</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">set_target_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span> <span class="k">if</span> <span class="n">tmpdir</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="app.optipass.OptiPass.create_input_frame" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_input_frame</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Build a data frame that has the rows that will be passed to OptiPass. This
+frame is basically a subset of the columns of the barrier frame, using column
+names defined in the targets frame.  The frame is saved as an instance variable
+of this object.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
 <span class="normal">135</span>
 <span class="normal">136</span>
 <span class="normal">137</span>
@@ -603,157 +1522,13 @@ names of projects, a dictionary of region names for each project.</p>
 <span class="normal">156</span>
 <span class="normal">157</span>
 <span class="normal">158</span>
-<span class="normal">159</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/colnames/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">colnames</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Respond to GET requests of the form `/colnames/P` where P is a project name.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        a dictionary with two entries, the name of the mapping and the names of the colname files</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">project</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">cname_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">COLNAMES</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">cname_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">cname_file</span> <span class="o">=</span> <span class="n">cname_dir</span> <span class="o">/</span> <span class="n">COLNAME_FILE</span>
-    <span class="k">if</span> <span class="n">cname_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-        <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">COLNAME_FILE</span><span class="p">]}</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">cname_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">alts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cname_dir</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">alts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">alt_name</span> <span class="o">=</span> <span class="n">alts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">cnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">stem</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.csv&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">alt_name</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="n">cnames</span> <span class="p">}</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div><h3 id="optipass"><code>optipass</code></h3>
-
-
-<div class="doc doc-object doc-function">
-
-
-
-
-    <div class="doc doc-contents first">
-
-      <p>A GET request of the form <code>/optipass/P?ARGS</code> runs OptiPass using the parameter values passed in the URL.</p>
-
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Parameters:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              <b><code>project</code></b>
-                  (<code>str</code>)
-              –
-              <div class="doc-md-description">
-                <p>the name of the project (path to target and barrier files)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>regions</code></b>
-                  (<code>str</code>)
-              –
-              <div class="doc-md-description">
-                <p>comma-separated string of region names</p>
-              </div>
-            </li>
-            <li>
-              <b><code>targets</code></b>
-                  (<code>str</code>)
-              –
-              <div class="doc-md-description">
-                <p>comma-separated string of 2-letter target IDs</p>
-              </div>
-            </li>
-            <li>
-              <b><code>weights</code></b>
-                  (<code>str | None</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>comma-separated list of ints, one for each target (optional)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>bmin</code></b>
-                  (<code>int</code>)
-              –
-              <div class="doc-md-description">
-                <p>first budget value</p>
-              </div>
-            </li>
-            <li>
-              <b><code>bcount</code></b>
-                  (<code>int</code>)
-              –
-              <div class="doc-md-description">
-                <p>number of budgets (<em>i.e.</em> number of times to run OptiPass)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>bdelta</code></b>
-                  (<code>int</code>)
-              –
-              <div class="doc-md-description">
-                <p>distance between budget values (<em>i.e.</em> step size)</p>
-              </div>
-            </li>
-            <li>
-              <b><code>colnames</code></b>
-                  (<code>str | None</code>, default:
-                      <code>None</code>
-)
-              –
-              <div class="doc-md-description">
-                <p>climate scenario, either <code>current</code> or <code>future</code> (optional)</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="field-list">
-  <colgroup>
-    <col class="field-name" />
-    <col class="field-body" />
-  </colgroup>
-  <tbody valign="top">
-    <tr class="field">
-      <th class="field-name">Returns:</th>
-      <td class="field-body">
-        <ul class="first simple">
-            <li>
-              –
-              <div class="doc-md-description">
-                <p>a dictionary with a status indicator and a token that can be used to fetch results.</p>
-              </div>
-            </li>
-        </ul>
-      </td>
-    </tr>
-  </tbody>
-</table>
-            <details class="quote">
-              <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
@@ -768,9 +1543,86 @@ names of projects, a dictionary of region names for each project.</p>
 <span class="normal">177</span>
 <span class="normal">178</span>
 <span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
+<span class="normal">180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_input_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Build a data frame that has the rows that will be passed to OptiPass. This</span>
+<span class="sd">    frame is basically a subset of the columns of the barrier frame, using column</span>
+<span class="sd">    names defined in the targets frame.  The frame is saved as an instance variable</span>
+<span class="sd">    of this object.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Initialize the output frame (df) with the ID and region columns </span>
+    <span class="c1"># from the data set </span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">[[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span><span class="s1">&#39;region&#39;</span><span class="p">]]</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span><span class="s1">&#39;REG&#39;</span><span class="p">]</span>
+
+    <span class="c1"># The FOCUS column is all 1&#39;s</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="o">.</span><span class="n">index</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;FOCUS&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Copy the downstream ID column</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">[</span><span class="s1">&#39;DSID&#39;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;DSID&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Add habitat column for each target.  The name of the column to copy is</span>
+    <span class="c1"># in the mapping frame, the column to copy is in the passability frame</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">passability</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="s1">&#39;habitat&#39;</span><span class="p">]]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span><span class="n">col</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;HAB_&#39;</span><span class="o">+</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># Same, but for pre-mitigation passage values</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">passability</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="s1">&#39;prepass&#39;</span><span class="p">]]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span><span class="n">col</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;PRE_&#39;</span><span class="o">+</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># Copy the NPROJ column (1 if a gate is used, 0 if not)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">[</span><span class="s1">&#39;NPROJ&#39;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;NPROJ&#39;</span><span class="p">)</span>
+
+    <span class="c1"># The ACTION column is always all 0 (we consider only one scenario)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;ACTION&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="o">.</span><span class="n">index</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ACTION&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Copy the cost to fix a gate</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">barriers</span><span class="p">[</span><span class="s1">&#39;cost&#39;</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;COST&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Same logic as above, copy the post-mitigation passage for each target</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">passability</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="s1">&#39;postpass&#39;</span><span class="p">]]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span><span class="n">col</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;POST_&#39;</span><span class="o">+</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="c1"># All done making the data -- use the new column headers and save the frame</span>
+    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">header</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span> <span class="o">=</span> <span class="n">df</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="app.optipass.OptiPass.create_paths" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">create_paths</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create paths downstream from each gate (the paths will be 
+used to compute cumulative passability).  The paths are
+saved in an instance variable.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">182</span>
 <span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
@@ -786,55 +1638,380 @@ names of projects, a dictionary of region names for each project.</p>
 <span class="normal">195</span>
 <span class="normal">196</span>
 <span class="normal">197</span>
-<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/optipass/</span><span class="si">{project}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">optipass</span><span class="p">(</span><span class="n">project</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">regions</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">bmin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bcount</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bdelta</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">colnames</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">198</span>
+<span class="normal">199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">create_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    A GET request of the form `/optipass/P?ARGS` runs OptiPass using the parameter values passed in the URL.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        project:  the name of the project (path to target and barrier files)</span>
-<span class="sd">        regions:  comma-separated string of region names</span>
-<span class="sd">        targets:  comma-separated string of 2-letter target IDs</span>
-<span class="sd">        weights:  comma-separated list of ints, one for each target (optional)</span>
-<span class="sd">        bmin:  first budget value</span>
-<span class="sd">        bcount:  number of budgets (_i.e._ number of times to run OptiPass)</span>
-<span class="sd">        bdelta:  distance between budget values (_i.e._ step size)</span>
-<span class="sd">        colnames:  climate scenario, either `current` or `future` (optional)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        a dictionary with a status indicator and a token that can be used to fetch results.</span>
+<span class="sd">    Create paths downstream from each gate (the paths will be </span>
+<span class="sd">    used to compute cumulative passability).  The paths are</span>
+<span class="sd">    saved in an instance variable.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_names</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;unknown project: </span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">barrier_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">BARRIERS</span><span class="p">)</span> <span class="o">/</span> <span class="n">project</span> <span class="o">/</span> <span class="n">BARRIER_FILE</span>
-        <span class="n">target_file</span> <span class="o">=</span> <span class="n">target_file_name</span><span class="p">(</span><span class="n">project</span><span class="p">,</span> <span class="n">climate</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">target_file</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;no targets in project &quot;</span><span class="si">{</span><span class="n">project</span><span class="si">}</span><span class="s1">&quot; for climate: &quot;</span><span class="si">{</span><span class="n">climate</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
-        <span class="n">region_list</span> <span class="o">=</span> <span class="n">regions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">r</span> <span class="ow">in</span> <span class="n">region_names</span><span class="p">[</span><span class="n">project</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">region_list</span><span class="p">),</span> <span class="sa">f</span><span class="s1">&#39;unknown region in </span><span class="si">{</span><span class="n">regions</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">target_list</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-        <span class="n">token</span> <span class="o">=</span> <span class="n">run_optipass</span><span class="p">(</span><span class="n">barrier_file</span><span class="p">,</span> <span class="n">target_file</span><span class="p">,</span> <span class="n">region_list</span><span class="p">,</span> <span class="n">target_list</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">bmin</span><span class="p">,</span> <span class="n">bcount</span><span class="p">,</span> <span class="n">bdelta</span><span class="p">)</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;ok&#39;</span>
-    <span class="k">except</span> <span class="ne">AssertionError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;fail&#39;</span>
-        <span class="n">token</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_pandas_edgelist</span><span class="p">(</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">DSID</span><span class="o">.</span><span class="n">notnull</span><span class="p">()],</span> 
+        <span class="n">source</span><span class="o">=</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> 
+        <span class="n">target</span><span class="o">=</span><span class="s1">&#39;DSID&#39;</span><span class="p">,</span> 
+        <span class="n">create_using</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span>
+    <span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span> <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">DSID</span><span class="o">.</span><span class="n">isnull</span><span class="p">()]</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="p">{</span> <span class="n">n</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_from</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">G</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span> <span class="p">}</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
 
-</div><h3 id="tables"><code>tables</code></h3>
-
+</div>
 
 <div class="doc doc-object doc-function">
 
 
+<h3 id="app.optipass.OptiPass.path_from" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">path_from</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span></code>
+
+</h3>
 
 
-    <div class="doc doc-contents first">
+    <div class="doc doc-contents ">
 
-      <p>Respond to a GET request of the form <code>/tables/T</code> where T is a token returned by an earlier call to <code>optipass</code>.</p>
+      <p>Helper function used to create paths -- return a list of nodes in the path 
+from <code>x</code> to a downstream barrier that has no descendants.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>x</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>a barrier ID</p>
+              </div>
+            </li>
+            <li>
+              <b><code>graph</code></b>
+                  (<code><span title="networkx.DiGraph">DiGraph</span></code>)
+              –
+              <div class="doc-md-description">
+                <p>a digraph based on downstream IDs</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Returns:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+                  <code>list</code>
+              –
+              <div class="doc-md-description">
+                <p>a list of all barriers downstream from x</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">path_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">graph</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Helper function used to create paths -- return a list of nodes in the path </span>
+<span class="sd">    from `x` to a downstream barrier that has no descendants.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">      x: a barrier ID</span>
+<span class="sd">      graph: a digraph based on downstream IDs</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">      a list of all barriers downstream from x</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">child</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">dfs_edges</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span><span class="n">x</span><span class="p">)]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="app.optipass.OptiPass.set_target_weights" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">set_target_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Create the target weight values that will be passed on the command line when
+OptiPass is run.  If the list is None set each weight to 1.  Weights
+are saved in an instance variable.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>weights</code></b>
+                  (<code>list[int] | None</code>)
+              –
+              <div class="doc-md-description">
+                <p>None if the user did not specify weighrs, otherwise the list of integer weights from the GUI</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_target_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Create the target weight values that will be passed on the command line when</span>
+<span class="sd">    OptiPass is run.  If the list is None set each weight to 1.  Weights</span>
+<span class="sd">    are saved in an instance variable.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">      weights:  None if the user did not specify weighrs, otherwise the list of integer weights from the GUI</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">weights</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weighted</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="app.optipass.OptiPass.run" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">bmin</span><span class="p">,</span> <span class="n">bdelta</span><span class="p">,</span> <span class="n">bcount</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Run Optipass once for each budget level.  Create the shell commands and
+run them.  Outputs are saved in a temp directory.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>bmin</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>starting budget level</p>
+              </div>
+            </li>
+            <li>
+              <b><code>bdelta</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>budget increment</p>
+              </div>
+            </li>
+            <li>
+              <b><code>bcount</code></b>
+                  (<code>int</code>)
+              –
+              <div class="doc-md-description">
+                <p>number of budgets</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>      <p>Note:</p>
+<ul>
+<li>for unit tests the outputs are already in the temp directory so OptiPass isn't run</li>
+<li>when running OptiPass run it once with a budget of $0 and then once for each budget level</li>
+</ul>
+
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bmin</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bdelta</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bcount</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Run Optipass once for each budget level.  Create the shell commands and</span>
+<span class="sd">    run them.  Outputs are saved in a temp directory.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">      bmin:  starting budget level</span>
+<span class="sd">      bdelta:  budget increment</span>
+<span class="sd">      bcount:  number of budgets</span>
+
+<span class="sd">    Note:</span>
+
+<span class="sd">    * for unit tests the outputs are already in the temp directory so OptiPass isn&#39;t run</span>
+<span class="sd">    * when running OptiPass run it once with a budget of $0 and then once for each budget level</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using saved results in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">optipass_is_installed</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;OptiPassMain.exe not found&#39;</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;op&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">))</span>
+    <span class="n">barrier_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span> <span class="o">/</span> <span class="s1">&#39;input.txt&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">barrier_file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">lineterminator</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s1">&#39;NA&#39;</span><span class="p">)</span>
+
+    <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;bin</span><span class="se">\\</span><span class="s1">OptiPassMain.exe -f </span><span class="si">{bf}</span><span class="s1"> -o </span><span class="si">{of}</span><span class="s1"> -b </span><span class="si">{n}</span><span class="s1">&#39;</span>
+
+    <span class="n">budget</span> <span class="o">=</span> <span class="n">bmin</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bcount</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;output_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.txt&#39;</span>
+        <span class="n">cmnd</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bf</span><span class="o">=</span><span class="n">barrier_file</span><span class="p">,</span> <span class="n">of</span><span class="o">=</span><span class="n">outfile</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">budget</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">num_targets</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">cmnd</span> <span class="o">+=</span> <span class="s1">&#39; -t </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_targets</span><span class="p">)</span>
+            <span class="n">cmnd</span> <span class="o">+=</span> <span class="s1">&#39; -w &#39;</span> <span class="o">+</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">])</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">cmnd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">cmnd</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;OptiPassMain.exe: </span><span class="si">{</span><span class="n">resp</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+        <span class="n">budget</span> <span class="o">+=</span> <span class="n">bdelta</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;output*.txt&#39;</span><span class="p">)))</span> 
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">bcount</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No output for </span><span class="si">{</span><span class="n">bcount</span><span class="o">-</span><span class="n">n</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">bcount</span><span class="si">}</span><span class="s1"> optimizations&#39;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="app.optipass.OptiPass.collect_results" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">collect_results</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>OptiPass makes one output file for each budget level.  Iterate
+over those files to gather results into a pair of data frames. </p>
 
 
 <table class="field-list">
@@ -848,9 +2025,10 @@ names of projects, a dictionary of region names for each project.</p>
       <td class="field-body">
         <ul class="first simple">
             <li>
+                  <code>tuple</code>
               –
               <div class="doc-md-description">
-                <p>a dictionary with a status code and two output tables</p>
+                <p>a tuple with two data frames, one for budgets, the other for barriers</p>
               </div>
             </li>
         </ul>
@@ -859,55 +2037,289 @@ names of projects, a dictionary of region names for each project.</p>
   </tbody>
 </table>
             <details class="quote">
-              <summary>Source code in <code>app/main.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/tables/</span><span class="si">{token}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">tables</span><span class="p">(</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">collect_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Respond to a GET request of the form `/tables/T` where T is a token returned by an earlier call to `optipass`.</span>
+<span class="sd">    OptiPass makes one output file for each budget level.  Iterate</span>
+<span class="sd">    over those files to gather results into a pair of data frames. </span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        a dictionary with a status code and two output tables</span>
+<span class="sd">      a tuple with two data frames, one for budgets, the other for barriers </span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">,</span> <span class="s1">&#39;habitat&#39;</span><span class="p">,</span> <span class="s1">&#39;gates&#39;</span><span class="p">]}</span>
+    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmpdir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;output_*.txt&#39;</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">stem</span><span class="p">[</span><span class="mi">7</span><span class="p">:])):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">OUTPUTS</span><span class="p">)</span> <span class="o">/</span> <span class="n">token</span> <span class="o">/</span> <span class="s1">&#39;matrix.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">matrix</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">OUTPUTS</span><span class="p">)</span> <span class="o">/</span> <span class="n">token</span> <span class="o">/</span> <span class="s1">&#39;summary.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">summary</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;ok&#39;</span><span class="p">,</span> <span class="s1">&#39;matrix&#39;</span><span class="p">:</span> <span class="n">matrix</span><span class="p">,</span> <span class="s1">&#39;summary&#39;</span><span class="p">:</span> <span class="n">summary</span><span class="p">}</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="s1">&#39;fail&#39;</span><span class="p">,</span> <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;error reading results for </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">}</span>
+    <span class="n">dct</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">)):</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">budget</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">dct</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">gates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span><span class="o">.</span><span class="n">ID</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dct</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_frame</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_potential_habitat</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
 
-</div><h2 id="optipasspy"><code>optipass.py</code></h2>
-<p>TBD</p>
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="app.optipass.OptiPass.parse_output" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">parse_output</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">dct</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Parse an output file, appending results to the lists in dct.  We need to 
+handle two different formats, depending on whether there was one target 
+or more than one.  Values extracted from a file are appended to the lists 
+passed in the dictionary argument.</p>
+
+
+<table class="field-list">
+  <colgroup>
+    <col class="field-name" />
+    <col class="field-body" />
+  </colgroup>
+  <tbody valign="top">
+    <tr class="field">
+      <th class="field-name">Parameters:</th>
+      <td class="field-body">
+        <ul class="first simple">
+            <li>
+              <b><code>fn</code></b>
+                  (<code>str</code>)
+              –
+              <div class="doc-md-description">
+                <p>the name of the file to parse</p>
+              </div>
+            </li>
+            <li>
+              <b><code>dct</code></b>
+                  (<code>dict</code>)
+              –
+              <div class="doc-md-description">
+                <p>a dictionary containing lists for budget, habitat, and gate values</p>
+              </div>
+            </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span>
+<span class="normal">337</span>
+<span class="normal">338</span>
+<span class="normal">339</span>
+<span class="normal">340</span>
+<span class="normal">341</span>
+<span class="normal">342</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span>
+<span class="normal">346</span>
+<span class="normal">347</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">parse_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dct</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parse an output file, appending results to the lists in dct.  We need to </span>
+<span class="sd">    handle two different formats, depending on whether there was one target </span>
+<span class="sd">    or more than one.  Values extracted from a file are appended to the lists </span>
+<span class="sd">    passed in the dictionary argument.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">      fn: the name of the file to parse</span>
+<span class="sd">      dct: a dictionary containing lists for budget, habitat, and gate values</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">parse_header_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">tag</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;parsing </span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">amount</span> <span class="o">=</span> <span class="n">parse_header_line</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">(),</span> <span class="s1">&#39;BUDGET&#39;</span><span class="p">)</span>
+        <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">amount</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">parse_header_line</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">(),</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;NO_SOLN&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;No solution&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>                        <span class="c1"># skip OPTGAP</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;PTNL&#39;</span><span class="p">):</span>
+            <span class="c1"># this file has only one target</span>
+            <span class="n">hab</span> <span class="o">=</span> <span class="n">parse_header_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s1">&#39;PTNL_HABITAT&#39;</span><span class="p">)</span>
+            <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;habitat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">hab</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>                    <span class="c1"># skip NETGAIN</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># multiple targets; skip past individual weights and targets</span>
+            <span class="k">while</span> <span class="n">line</span> <span class="o">:=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;WT_PTNL_HAB&#39;</span><span class="p">):</span>
+                    <span class="k">break</span>
+            <span class="n">hab</span> <span class="o">=</span> <span class="n">parse_header_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s1">&#39;WT_PTNL_HAB&#39;</span><span class="p">)</span>
+            <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;habitat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">hab</span><span class="p">))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>                    <span class="c1"># skip WT_NETGAIN</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>                        <span class="c1"># skip blank line</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>                        <span class="c1"># skip header</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">line</span> <span class="o">:=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">():</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">action</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;gates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="app.optipass.OptiPass.add_potential_habitat" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">add_potential_habitat</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Compute the potential habitat available after restoration, using
+the original unscaled habitat values.  Adds a new table named summary:
+one column for each target, showing the potential habitat gain at each 
+budget level, then the weighted potential habitat over all targets, and
+finally the net gain.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>app/optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_potential_habitat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Compute the potential habitat available after restoration, using</span>
+<span class="sd">    the original unscaled habitat values.  Adds a new table named summary:</span>
+<span class="sd">    one column for each target, showing the potential habitat gain at each </span>
+<span class="sd">    budget level, then the weighted potential habitat over all targets, and</span>
+<span class="sd">    finally the net gain.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># make a copy of the passability data with NaN replaced by 0s and using the</span>
+    <span class="c1"># barrier ID as the index</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">passability</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">)</span>
+    <span class="n">wph</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ah</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">wph</span> <span class="o">+=</span> <span class="n">cp</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">cp</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">,</span> <span class="n">col</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">gain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+        <span class="n">mcol</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">unscaled</span><span class="p">]</span>
+        <span class="n">mcol</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">mcol</span><span class="p">,</span> <span class="n">gain</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;wph&#39;</span><span class="p">:</span> <span class="n">wph</span><span class="p">})],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;netgain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">habitat</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">habitat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../data/" class="btn btn-neutral float-left" title="Data Files"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../install/" class="btn btn-neutral float-left" title="Installation and Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../tests/" class="btn btn-neutral float-right" title="Tests">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -931,7 +2343,7 @@ names of projects, a dictionary of region names for each project.</p>
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../data/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../install/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../tests/" style="color: #fcfcfc">Next &raquo;</a></span>

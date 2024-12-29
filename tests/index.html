@@ -33,7 +33,10 @@
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
           <a href=".." class="icon icon-home"> OptiPass Server
-        </a><div role="search">
+        </a>
+        <div class="version">
+          Version 1.0.1
+        </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
@@ -43,22 +46,80 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Home</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="..">REST Server for OptiPass</a>
+                  <li class="toctree-l1"><a class="reference internal" href="..">A REST Server for OptiPass™</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data Models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Installation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation and Configuration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
               <ul class="current">
-                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data Files</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="../modules/">Modules</a>
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Tests</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#tests-for-mainpy">Tests for main.py</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main">test_main</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main.test_projects">test_projects</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main.test_html_demo">test_html_demo</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main.test_barriers_demo">test_barriers_demo</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main.test_mapinfo_demo">test_mapinfo_demo</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main.test_targets_demo">test_targets_demo</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main.test_unknown_project">test_unknown_project</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_main.test_unknown_files">test_unknown_files</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#tests-for-optipasspy">Tests for optipass,py</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass">test_optipass</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_OP">test_OP</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_OP_with_existing_data">test_OP_with_existing_data</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_region_and_target_names">test_region_and_target_names</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_one_region_and_one_target">test_one_region_and_one_target</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_one_target_input">test_one_target_input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_two_target_input">test_two_target_input</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_unweighted">test_unweighted</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_weighted">test_weighted</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_paths">test_paths</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_output_parser_one_target">test_output_parser_one_target</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_output_parser_two_targets">test_output_parser_two_targets</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_example_1">test_example_1</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_example_4">test_example_4</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_potential_habitat_1">test_potential_habitat_1</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#test.test_optipass.test_potential_habitat_4">test_potential_habitat_4</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -86,11 +147,1057 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="integration-tests">Integration Tests</h2>
-<p>TBD</p>
-<h2 id="unit-tests">Unit Tests</h2>
-<p>TBD</p>
-<p><br/></p>
+                <h2 id="unit-tests">Unit Tests</h2>
+<p>Unit testing is done with <code>pytest</code>.
+To run all the tests, simply <code>cd</code> to the top level directory and type this shell command:</p>
+<pre><code class="language-bash">$ pytest
+</code></pre>
+<p>The tests are all in the <code>tests</code> directory:</p>
+<ul>
+<li><code>test_main.py</code> has functions that test each of the paths defined in <code>main.py</code></li>
+<li><code>test_optipass.py</code> has functions that test the interface to OptiPass</li>
+</ul>
+<p>You can run one set of tests by including the file name in the shell command, <em>e.g.</em></p>
+<pre><code class="language-bash">$ pytest test/test_optipass.py
+</code></pre>
+<h3 id="tests-for-mainpy">Tests for <code>main.py</code></h3>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="test.test_main"></a>
+    <div class="doc doc-contents first">
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_main.test_projects" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_projects</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Make sure the demo project is one of the projectes.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_projects</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Make sure the demo project is one of the projectes.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/projects&#39;</span><span class="p">)</span>
+    <span class="n">lst</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="s1">&#39;demo&#39;</span> <span class="ow">in</span> <span class="n">lst</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_main.test_html_demo" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_html_demo</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Fetch the welcome message for the demo project, look for key words</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_html_demo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Fetch the welcome message for the demo project, look for key words</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/html/demo/welcome.html&#39;</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;&lt;p&gt;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">11</span>
+    <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;OptiPass&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span>
+    <span class="k">assert</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;FastAPI&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_main.test_barriers_demo" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_barriers_demo</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Test the barriers entry point</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_barriers_demo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Test the barriers entry point</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/barriers/demo&#39;</span><span class="p">)</span>
+    <span class="n">dct</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;project&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;demo&#39;</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;barriers&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;ID&#39;</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;comment&#39;</span>
+    <span class="n">gates</span> <span class="o">=</span> <span class="p">{</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">}</span>
+    <span class="k">assert</span> <span class="n">gates</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="s1">&#39;F&#39;</span><span class="p">}</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_main.test_mapinfo_demo" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_mapinfo_demo</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Test the mapinfo entry point</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_mapinfo_demo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Test the mapinfo entry point</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/mapinfo/demo&#39;</span><span class="p">)</span>
+    <span class="n">dct</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">dct</span><span class="p">[</span><span class="s1">&#39;mapinfo&#39;</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span>
+    <span class="k">assert</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;map_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;StaticMap&#39;</span>
+    <span class="k">assert</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;map_file&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Riverlands.png&#39;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_main.test_targets_demo" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_targets_demo</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Test the targets entry point with the demo project</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_targets_demo</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Test the targets entry point with the demo project&#39;&#39;&#39;</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/targets/demo&#39;</span><span class="p">)</span>
+    <span class="n">dct</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;project&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;demo&#39;</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;targets&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;abbrev&#39;</span> <span class="ow">and</span> <span class="n">header</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;infra&#39;</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="p">{</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="p">}</span>
+    <span class="k">assert</span> <span class="n">targets</span> <span class="o">==</span> <span class="p">{</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">}</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;layout&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">layout</span> <span class="o">==</span> <span class="s1">&#39;T1 T2&#39;</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_main.test_unknown_project" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_unknown_project</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Each of the paths should check for an unknown project name</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_unknown_project</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Each of the paths should check for an unknown project name</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;/html/foo/welcome.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;/barriers/foo&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;/mapinfo/foo&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;/targets/foo&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;/colnames/foo&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_main.test_unknown_files" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_unknown_files</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Paths that fetch file should return 404 not found responses</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_main.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_unknown_files</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Paths that fetch file should return 404 not found responses </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;/html/demo/xxx.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;/map/demo/xxx.png&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">dct</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span>
+        <span class="k">assert</span> <span class="s1">&#39;not found&#39;</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;detail&#39;</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h3 id="tests-for-optipasspy">Tests for <code>optipass,py</code></h3>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="test.test_optipass"></a>
+    <div class="doc doc-contents first">
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_OP" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_OP</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Test the OP constructor. Make an instance, make sure all instance vars set
+to defaults.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_OP</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Test the OP constructor. Make an instance, make sure all instance vars set</span>
+<span class="sd">    to defaults.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[])</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">barriers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">passability</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mapping</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">weighted</span> <span class="o">==</span> <span class="kc">False</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">input_frame</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">paths</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">summary</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">tmpdir</span> <span class="ow">is</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_OP_with_existing_data" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_OP_with_existing_data</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Test the OP constructor when a path to existing data is passed</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_OP_with_existing_data</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Test the OP constructor when a path to existing data is passed</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;fixtures&#39;</span> <span class="o">/</span> <span class="s1">&#39;Example_1&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[],</span> <span class="n">tmpdir</span> <span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">tmpdir</span> <span class="o">==</span> <span class="n">p</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_region_and_target_names" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_region_and_target_names</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Verify region and target names</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_region_and_target_names</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Verify region and target names</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">barriers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">passability</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mapping</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_one_region_and_one_target" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_one_region_and_one_target</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Check barrier frame when only one region and one target is used</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_one_region_and_one_target</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Check barrier frame when only one region and one target is used</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">barriers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">passability</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mapping</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_one_target_input" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_one_target_input</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Make an input file for single target.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_one_target_input</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Make an input file for single target.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">])</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">input_frame</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;REG&#39;</span><span class="p">,</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span> <span class="s1">&#39;DSID&#39;</span><span class="p">,</span> <span class="s1">&#39;HAB_T1&#39;</span><span class="p">,</span> <span class="s1">&#39;PRE_T1&#39;</span><span class="p">,</span> <span class="s1">&#39;NPROJ&#39;</span><span class="p">,</span> <span class="s1">&#39;ACTION&#39;</span><span class="p">,</span> <span class="s1">&#39;COST&#39;</span><span class="p">,</span> <span class="s1">&#39;POST_T1&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">FOCUS</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">ACTION</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">COST</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">590000</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_two_target_input" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_two_target_input</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Make an input file for two targets</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_two_target_input</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Make an input file for two targets</span>
+<span class="sd">   &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">])</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">input_frame</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span> <span class="s1">&#39;REG&#39;</span><span class="p">,</span> <span class="s1">&#39;FOCUS&#39;</span><span class="p">,</span> <span class="s1">&#39;DSID&#39;</span><span class="p">,</span> <span class="s1">&#39;HAB_T1&#39;</span><span class="p">,</span> <span class="s1">&#39;HAB_T2&#39;</span><span class="p">,</span> <span class="s1">&#39;PRE_T1&#39;</span><span class="p">,</span> <span class="s1">&#39;PRE_T2&#39;</span><span class="p">,</span> <span class="s1">&#39;NPROJ&#39;</span><span class="p">,</span> <span class="s1">&#39;ACTION&#39;</span><span class="p">,</span> <span class="s1">&#39;COST&#39;</span><span class="p">,</span> <span class="s1">&#39;POST_T1&#39;</span><span class="p">,</span> <span class="s1">&#39;POST_T2&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">FOCUS</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">ACTION</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">COST</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">590000</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_unweighted" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_unweighted</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Make sure weights are initialized to 1s, one per target</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_unweighted</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Make sure weights are initialized to 1s, one per target</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">weights</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_weighted" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_weighted</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Make sure weights are initialized with specified settings</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_weighted</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Make sure weights are initialized with specified settings</span>
+<span class="sd">   &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">weights</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_paths" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_paths</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Verify the paths downstream from gates</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_paths</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Verify the paths downstream from gates</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">])</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_paths</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;F&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">op</span><span class="o">.</span><span class="n">paths</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_output_parser_one_target" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_output_parser_one_target</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Parse an output file with only one target</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_output_parser_one_target</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parse an output file with only one target</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;fixtures&#39;</span> <span class="o">/</span> <span class="s1">&#39;Example_1&#39;</span> <span class="o">/</span> <span class="s1">&#39;output_5.txt&#39;</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">,</span> <span class="s1">&#39;habitat&#39;</span><span class="p">,</span> <span class="s1">&#39;gates&#39;</span><span class="p">]}</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Test1&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">])</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">round</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">500000</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;habitat&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">round</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;habitat&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mf">8.52</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;gates&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cols</span><span class="p">[</span><span class="s1">&#39;gates&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_output_parser_two_targets" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_output_parser_two_targets</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Parse an output file with two targets</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_output_parser_two_targets</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Parse an output file with two targets</span>
+<span class="sd">   &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;fixtures&#39;</span> <span class="o">/</span> <span class="s1">&#39;Example_4&#39;</span> <span class="o">/</span> <span class="s1">&#39;output_5.txt&#39;</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span> <span class="n">x</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">,</span> <span class="s1">&#39;habitat&#39;</span><span class="p">,</span> <span class="s1">&#39;gates&#39;</span><span class="p">]}</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">])</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">cols</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">round</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;budget&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">500000</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;habitat&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">round</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;habitat&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mf">32.936</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="s1">&#39;gates&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">cols</span><span class="p">[</span><span class="s1">&#39;gates&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_example_1" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_example_1</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Collect all the results for Example 1 from the OptiPass User Manual.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_example_1</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Collect all the results for Example 1 from the OptiPass User Manual.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;fixtures&#39;</span> <span class="o">/</span> <span class="s1">&#39;Example_1&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">],</span> <span class="n">tmpdir</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_paths</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">collect_results</span><span class="p">()</span>
+
+    <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">budget</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1500000</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">habitat</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mf">23.30</span>
+
+    <span class="n">budget_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">col</span><span class="p">,</span><span class="nb">int</span><span class="p">)]</span>
+    <span class="k">assert</span> <span class="n">budget_cols</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">budget</span><span class="p">)</span>
+
+    <span class="c1"># these comprehensions make lists of budgets where a specified gate was selected,</span>
+    <span class="c1"># e.g. gate A is in the $400K and $500K budgets and D is never selected.</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">]]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">400000</span><span class="p">,</span><span class="mi">500000</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">]]</span> <span class="o">==</span> <span class="p">[</span> <span class="p">]</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">]]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">100000</span><span class="p">,</span><span class="mi">300000</span><span class="p">]</span>
+
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="c1"># number of times each gate is part of a solution</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_example_4" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_example_4</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Same as test_example_1, but using Example 4, which has two restoration targets.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_example_4</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Same as test_example_1, but using Example 4, which has two restoration targets.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;fixtures&#39;</span> <span class="o">/</span> <span class="s1">&#39;Example_4&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">tmpdir</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_paths</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">collect_results</span><span class="p">()</span>
+
+    <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span> <span class="o">==</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">budget</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1500000</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">habitat</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mf">95.21</span>
+
+    <span class="c1"># using two targets does not change the gate selections</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">]]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">400000</span><span class="p">,</span><span class="mi">500000</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">]]</span> <span class="o">==</span> <span class="p">[</span> <span class="p">]</span>
+    <span class="k">assert</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">]]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">100000</span><span class="p">,</span><span class="mi">300000</span><span class="p">]</span>
+
+    <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>   <span class="c1"># number of times each gate is part of a solution</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_potential_habitat_1" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_potential_habitat_1</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Test the method that computes potential habitat, using the results 
+genearated for Example 1 in the OptiPass manual (Box 9).</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_potential_habitat_1</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Test the method that computes potential habitat, using the results </span>
+<span class="sd">    genearated for Example 1 in the OptiPass manual (Box 9).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;fixtures&#39;</span> <span class="o">/</span> <span class="s1">&#39;Example_1&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">],</span> <span class="n">tmpdir</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_paths</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">collect_results</span><span class="p">()</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">summary</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="s1">&#39;T1&#39;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;wph&#39;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">columns</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">wph</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.238</span>      <span class="c1"># PTNL_HABITAT at $0</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">wph</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mf">8.520</span>      <span class="c1"># PTNL_HABITAT at $500K</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="test.test_optipass.test_potential_habitat_4" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">test_potential_habitat_4</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">)</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+      <p>Same as test_potential_habitat_1, but using Example 4, with two restoration targets
+weighted differently (Box 11)</p>
+
+            <details class="quote">
+              <summary>Source code in <code>test/test_optipass.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">test_potential_habitat_4</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Same as test_potential_habitat_1, but using Example 4, with two restoration targets</span>
+<span class="sd">    weighted differently (Box 11)</span>
+<span class="sd">   &#39;&#39;&#39;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span> <span class="o">/</span> <span class="s1">&#39;fixtures&#39;</span> <span class="o">/</span> <span class="s1">&#39;Example_4&#39;</span>
+    <span class="n">op</span> <span class="o">=</span> <span class="n">OptiPass</span><span class="p">(</span><span class="n">barriers</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Trident&#39;</span><span class="p">,</span> <span class="s1">&#39;Red Fork&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span><span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">tmpdir</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_input_frame</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_paths</span><span class="p">()</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">collect_results</span><span class="p">()</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">summary</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+    <span class="k">assert</span> <span class="s1">&#39;T1&#39;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;T2&#39;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s1">&#39;wph&#39;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">columns</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">wph</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mf">5.491</span>
+    <span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">wph</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mf">21.084</span>    <span class="c1"># PTNL_HABITAT at $400K</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
               
             </div>
           </div><footer>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>REST Server for OptiPass - OptiPass Server</title>
+    <title>A REST Server for OptiPass™ - OptiPass Server</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,7 +14,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "REST Server for OptiPass";
+        var mkdocs_page_name = "A REST Server for OptiPass\u2122";
         var mkdocs_page_input_path = "index.md";
         var mkdocs_page_url = null;
       </script>
@@ -33,7 +33,10 @@
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
           <a href="." class="icon icon-home"> OptiPass Server
-        </a><div role="search">
+        </a>
+        <div class="version">
+          Version 1.0.1
+        </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
@@ -43,11 +46,13 @@
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Home</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">REST Server for OptiPass</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">A REST Server for OptiPass™</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#example">Example</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#example">Example</a>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a>
     </li>
@@ -55,16 +60,18 @@
     </li>
     </ul>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="data/">Data Models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="api/">API</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Installation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="install/">Installation</a>
+                  <li class="toctree-l1"><a class="reference internal" href="install/">Installation and Configuration</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="data/">Data Files</a>
-                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="modules/">Modules</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="tests/">Tests</a>
@@ -85,7 +92,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
           <li class="breadcrumb-item">Home</li>
-      <li class="breadcrumb-item active">REST Server for OptiPass</li>
+      <li class="breadcrumb-item active">A REST Server for OptiPass™</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -94,42 +101,55 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="rest-server-for-optipass">REST Server for OptiPass</h1>
-<p>OptiPass™ is an application developed by Jesse O'Hanley at Ecotelligence®, LLC (https://www.ecotelligence.net/home/optipass).  </p>
-<p>The application is written in Visual C++ and runs only in a Microsoft Windows environment.  To make it more accessible to web applications we developed this REST server.  While the server needs to run on a Windows system, clients (such as the one at https://github.com/conery/op-client) can run on any system, or even in a Docker container.</p>
+                <h1 id="a-rest-server-for-optipasstm">A REST Server for OptiPass™</h1>
+<p>The Migratory Fish Passage Optimization Tool (OptiPass), is an application developed by Jesse O'Hanley at <a href="https://www.ecotelligence.net/home/optipass">Ecotelligence® LLC</a>.  </p>
+<p>The application is written in Visual C++ and runs only in a Microsoft Windows environment.  To make it more accessible to web applications we developed this REST server.  While the server needs to run on a Windows system, clients like <a href="https://github.com/conery/op-client"><code>op-client</code></a> can run on any system, or even in a Docker container.</p>
 <h2 id="overview">Overview</h2>
 <p>The server has two main roles:</p>
 <ol>
-<li>It manages tide gate data for one or more projects.  Each data set is a CSV file where records describe tide gates and other barriers.  Attributes include barrier names, locations, and so on.  The file also has the attributes OptiPass uses:  the cost to repair or replace a barrier, the upstream habitat impacted by the barrier, and the potential benefit of improving the barrier.</li>
+<li>It manages tide gate data for one or more projects.  Each data set is a collection of CSV files where records describe tide gates and other barriers. The files also have the information OptiPass needs:  the cost to repair or replace a barrier, the upstream habitat impacted by a barrier, and the potential benefit of improving a barrier.</li>
 <li>The server provides an API for running OptiPass.  A request to run OptiPass will include the IDs of barriers to include and the budget levels to use in order to generate ROI curves to show potential benefits from increasing budget levels.</li>
 </ol>
-<p>It would be possible to assign these roles to different applications -- <em>e.g.</em> have separate servers for the data and OptiPass -- but we decided to combine them in order to minimize web traffic.  A client simply needs to know the names and locations of barriers, and descriptions of potential benefits.  The complete data set for the Oregon Coast, for example, is in a CSV file with over 1000 records and is 330KB.  Each request to run OptiPass uses a small fraction of this data, so it makes sense to keep the data on the server and send short descriptions to the client.</p>
-<h2 id="example">Example</h2>
-<p>A common scenario for testing a FastAPI application is to launch Uvicorn (a Python-based web server) on the development system, passing it the name of the main function and specifying a port to listen to:</p>
-<pre><code class="language-bash">$ uvicorn app.main:app --port 8001
+<p>It would be possible to assign these roles to different applications -- <em>e.g.</em> have separate servers for the data and OptiPass -- but we decided to combine them in order to minimize web traffic.  A client simply needs to know the names and locations of barriers and short descriptions of potential benefits.  The complete data set for the Oregon Coast, for example, describes more than 1000 barriers and is about 350KB in size.
+A client that uses this data just needs to send the server about 100 bytes of barrier names and optimization goals.</p>
+<h4 id="example">Example</h4>
+<p>To interact with an OptiPass server simply send it an HTML GET request.</p>
+<p>Suppose there is a hypothetical server running at <code>tidegates-r-us.org</code>.
+A request is a URL that contains the server name and a command that specifies what we want the server to do:</p>
+<pre><code>http://tidegates-r-us.org/X
 </code></pre>
-<p>Then to request data from the server, simply send an HTML GET request to that port.  The response will be a JSON-encoded string that can easily be converted into a Python object.  This request asks the server for the names of all the datasets it manages:</p>
-<pre><code class="language-bash">$ curl localhost:8001/projects
-[&quot;demo&quot;]
+<p>where X is the command name.  For example, the <code>projects</code> command asks the server to send a list of all the data sets it manages.</p>
+<p>To see what projects are managed by our hypothetical server we would start a terminal session and type a shell command that uses <code>curl</code>, a very simple web browser that sends a request to a server and prints the response:</p>
+<pre><code class="language-bash">$ curl http://tidegates-r-us.org/projects
+['demo','oregon']
 </code></pre>
-<p>The repository includes a test data set named <code>demo</code> (based on the examples in the OptiPass manual).  Others can be added simply by saving them in the <code>static</code> folder on the server (see <a href="data/">Data</a>).</p>
+<p>This output tells us our hypothetical server has data sets for the demo project (based on sample data in the OptiPass manual) and the Oregon Coast data set.</p>
+<p>To run OptiPass, the command name is <code>optipass</code>.
+The URL is a bit more complicated since we have to include options that specify region names, budget levels:</p>
+<pre><code class="language-bash">$ curl http://tidegates-r-us.org/optipass/oregon?regions=Coos&amp;regions=Umpqua&amp;...
+{&quot;summary&quot;:&quot;,budget,habitat,gates...&quot;}
+</code></pre>
+<p>The server will build an input file for OptiPass using barriers from the regions named in the request.
+It will use other arguments in the request to figure out the budget levels and other information and then run OptiPass once for each budget.
+After the last run the data in the output files is collected into tables which are then sent back to the client.
+The output above shows the first few column names in the summary table.</p>
 <h2 id="implementation">Implementation</h2>
 <p>The server is written entirely in Python, using FastAPI to manage requests.  The top level directories in the GitHub repository are:</p>
 <ul>
 <li><code>app</code>: the main FastAPI application</li>
 <li><code>bin</code>: a folder for <code>OptiPass.exe</code> and other executables</li>
-<li><code>docs</code>:  notes for developers</li>
+<li><code>docs</code>:  documentation (which you are reading now)</li>
 <li><code>static</code>:  CSV files for barrier data and restoration target descriptions</li>
 <li><code>test</code>: unit tests</li>
 </ul>
-<p>Detailed documentation for the Python code in the <code>app</code> folder can be found in <a href="modules/">Modules</a>.  The test descriptions in <a href="tests/">Unit Tests</a> are a good place to find examples of how to call functions in the modules.</p>
+<p>Detailed documentation for the Python code in the <code>app</code> folder can be found in the <a href="modules/">Modules</a> section.  The test descriptions in <a href="tests/">Unit Tests</a> are a good place to find examples of how to call functions in the modules.</p>
 <h2 id="deployment">Deployment</h2>
-<p>Developers who want to deploy the server using their own data need to do the following (described in more detail in <a href="install/">Installation</a>):</p>
+<p>Developers who want to deploy the server using their own data need to do the following (described in more detail in <a href="install/">Installation and Configuration</a>):</p>
 <ul>
-<li>set up a server that runs Microsoft Windows; this can be a stand-alone Windows system on a networked PC, or on a virtual machine at Amazon Web Services or another cloud service</li>
+<li>set up a server that runs Microsoft Windows; this can be a stand-alone Windows system on a networked PC, or a virtual machine at Amazon Web Services or another cloud service</li>
 <li>clone the repository (this can be done with a single PIP command)</li>
-<li>install the command line version of OptiPass in the <code>bin</code> directory (<strong>OptiPass is not included with the repository</strong>)</li>
-<li>add their data files to the <code>static</code> folder (see <a href="data/">Data</a>)</li>
+<li>install the command line version of OptiPass in the <code>bin</code> directory (OptiPass is not included with the repository).</li>
+<li>add their data files to the <code>static</code> folder</li>
 <li>
 <p>open a PowerShell window and type the command that starts the server</p>
 </li>
@@ -141,7 +161,7 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="install/" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="data/" class="btn btn-neutral float-right" title="Data Models">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -165,7 +185,7 @@
     
     
     
-      <span><a href="install/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="data/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

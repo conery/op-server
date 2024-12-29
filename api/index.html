@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>API - OptiPass Server</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../css/tidegates.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "API";
+        var mkdocs_page_input_path = "api.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> OptiPass Server
+        </a>
+        <div class="version">
+          Version 1.0.1
+        </div><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Home</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="..">A REST Server for OptiPass™</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../data/">Data Models</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">API</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#projects">projects</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#barriersp">barriers/P</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#a-note-about-passability-values">A Note About Passability Values</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#targetsp">targets/P</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#colnamesp">colnames/P</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mapinfop">mapinfo/P</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mappf">map/P/F</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#htmlpf">html/P/F</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#optipassp">optipass/P</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_1"></a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Installation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation and Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../modules/">Modules</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../tests/">Tests</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">OptiPass Server</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Home</li>
+      <li class="breadcrumb-item active">API</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="api">API</h1>
+<p>Once a server is set up and running, we can retrieve data by sending it an HTTP request.</p>
+<p>The general format of a request URL is</p>
+<pre><code>http://&lt;server&gt;/&lt;command&gt;/&lt;args&gt;
+</code></pre>
+<p>For example, if a server is running at <code>tidegates-r-us.org</code> and you want to retrieve target descriptions for the demo project, send it the "targets" command with the project name as an argument:</p>
+<pre><code>http://tidegates.org-r-us/targets/demo
+</code></pre>
+<p>The server will respond with a dictionary (in JSON format) that has the project name and a string that can be converted into a Pandas dataframe.</p>
+<p>In the examples below we'll assume the server has been started on the local machine and is listening on port 8000 (the default).
+To launch the server, <code>cd</code> to the project directory and type</p>
+<pre><code>$ uvicorn app.main:app
+</code></pre>
+<p>Then to test a command just type its URL in a <code>curl</code> command:</p>
+<pre><code>$ curl http://localhost:8000/targets/demo
+{&quot;project&quot;:&quot;demo&quot;,&quot;targets&quot;:&quot;abbrev,long,short,label,infra\nT1,Target 1,Targ1,Target 1 (km),False\nT2,Target 2,Targ2,Target 2 (km),False&quot;,&quot;layout&quot;:&quot;T1 T2&quot;}
+</code></pre>
+<h2 id="projects"><code>projects</code></h2>
+<p>The <code>projects</code> command returns a list of names of projects configured on the server.</p>
+<p>Example:</p>
+<pre><code>$ curl http://localhost:8000/projects
+[&quot;demo&quot;,&quot;oregon&quot;]
+</code></pre>
+<h2 id="barriersp"><code>barriers/P</code></h2>
+<p>The <code>barriers</code> command takes one argument, the name of a project.
+It returns a dictionary that has the project name and a string that can be loaded into a Pandas dataframe.</p>
+<p>Example:</p>
+<pre><code>$ curl http://localhost:8000/barriers/demo
+{&quot;project&quot;:&quot;demo&quot;,&quot;barriers&quot;:&quot;ID,region,DSID,name,cost,X,Y,NPROJ,comment\nA,Trident,NA,,250000,330,202,1,\nB,Red Fork,A,,120000,235,230,1,\nC,Red Fork,B,,70000,148,220,1,\nD,Trident,A,,NA,195,335,0,\nE,Trident,D,,100000,100,440,1,\nF,Trident,D,,50000,125,450,1,&quot;}%  
+</code></pre>
+<p>Here is example of how a client can convert the CSV string into a dataframe:</p>
+<pre><code class="language-python">    req = f'{server}/barriers/{project}'
+    resp = requests.get(req)
+    if resp.status_code != 200:
+        raise OPServerError(resp)
+    buf = StringIO(resp.json()['barriers'])
+    df = pd.read_csv(buf)
+</code></pre>
+<h4 id="a-note-about-passability-values">A Note About Passability Values</h4>
+<p>The table returned by the <code>barriers</code> command is from the <code>barriers.csv</code> file in the <code>static</code> folder for the project.  The passability data in <code>passability.csv</code> is not returned, assuming most clients just need the names and basic information about barriers and targets.</p>
+<h2 id="targetsp"><code>targets/P</code></h2>
+<p>The <code>targets</code> command takes one argument, the name of a project.
+It returns a dictionary with three entries:</p>
+<ul>
+<li>the target name</li>
+<li>a CSV string that can be converted into the target table (<em>i.e.</em> the contents of the <code>targets.csv</code> file for the project)</li>
+<li>a text string with the suggested layout for displaying target names in a GUI</li>
+</ul>
+<p>Example:</p>
+<pre><code>$ curl http://localhost:8000/targets/demo
+{&quot;project&quot;:&quot;demo&quot;,&quot;targets&quot;:&quot;abbrev,long,short,label,infra\nT1,Target 1,Targ1,Target 1 (km),False\nT2,Target 2,Targ2,Target 2 (km),False&quot;,&quot;layout&quot;:&quot;T1 T2&quot;}% 
+</code></pre>
+<h2 id="colnamesp"><code>colnames/P</code></h2>
+<p>If a project has more than one way of connecting target names to benefit values a server allows a user to put more than one mapping file in the <code>static</code> folder.</p>
+<p>An example of where this feature is used is in the Oregon coast data.
+That data set has two differents sets of habitat values for infrastructure targets, some defined for current climate values and a second set that assume temperatures rise and more land is inundated at high tide.  That project has two column name mapping files, one named <code>current.csv</code> and one named <code>future.csv</code>.</p>
+<p>The <code>colnames</code> command returns a dictionary that tells a client whether or not a project has alternative column name mappings.
+The dictionary has two entries:  a <code>name</code> field and a <code>files</code> field with a list of file names.</p>
+<p>The dictionary returned for the Oregon coast project looks like this:</p>
+<pre><code>{ 'name': 'climate', 'files': ['current.csv', 'future'csv] }
+</code></pre>
+<p>This allows the GUI managed by the client to create a menu or a switch labled "climate" with two alternatives, one for "current" and one for "future".</p>
+<p>The demo project has only one mapping, so the dictionary has None for the name and a single file name in the list:</p>
+<pre><code>$ curl http://localhost:8000/colnames/demo
+{&quot;name&quot;:null,&quot;files&quot;:[&quot;colnames.csv&quot;]}%
+</code></pre>
+<p>One of these mapping names -- <code>current</code>, <code>future</code>, or simply <code>colnames</code> -- must be passed to the command that runs OptiPass so it knows which passability values to use.</p>
+<h2 id="mapinfop"><code>mapinfo/P</code></h2>
+<p>The <code>mapinfo</code> command retuns a dictionary that tells the client how to display a map in the GUI.</p>
+<p>There are two kinds of maps.
+The demo project uses a <strong>static map</strong> where the map is an image in PNG format.
+The dictionary returned by the <code>mapinfo</code> command has the necessary information to diplay the map:</p>
+<pre><code class="language-python">&quot;mapinfo&quot;: {
+    &quot;map_type&quot;: &quot;StaticMap&quot;,
+    &quot;map_file&quot;: &quot;Riverlands.png&quot;,
+    &quot;map_title&quot;: &quot;The Riverlands&quot;,
+    &quot;map_tools&quot;: [&quot;hover&quot;]
+}
+</code></pre>
+<p>The PNG image is also stored on the server; to fetch the map the client sends a <code>map</code> command, described below.</p>
+<p>The other kind of map is a <strong>tiled map</strong>.
+For this type of map the client connects to a GIS server to create the map.
+The Oregon project uses a tiled server, and this is the value passed back to the client that tells it how to display that map:</p>
+<pre><code class="language-python">&quot;mapinfo&quot;: {
+    &quot;map_type&quot;: &quot;TiledMap&quot;,
+    &quot;map_title&quot;: &quot;Oregon Coast&quot;,
+    &quot;map_tools&quot;: [&quot;pan&quot;,&quot;wheel_zoom&quot;,&quot;hover&quot;,&quot;reset&quot;]
+}
+</code></pre>
+<p>The client uses the <code>mapinfo</code> structures to draw a map in its GUI.
+When the user clicks a region name, the locations of barriers in that regions are displayed on the map.
+Those locations are found in the barrier file, in the columns named <code>X</code> and <code>Y</code>.</p>
+<ul>
+<li>When a project has a static map, the coordinates are locations (in pixels) on the PNG file.</li>
+<li>For a tiled map, the locations are latitude and longitude; the client passes them to the tile server to fetch the geographic region for the barriers.</li>
+</ul>
+<h2 id="mappf"><code>map/P/F</code></h2>
+<p>The <code>map</code> command returns a PNG image to the client.  The arguments are the project name and the name of the image file (which the client learned from an earlier <code>mapinfo</code> request).</p>
+<p>For example, this is the request a client would send if it's displaying the demo data:</p>
+<pre><code>http://localhost:8000/map/demo/Riverlands.png
+</code></pre>
+<h2 id="htmlpf"><code>html/P/F</code></h2>
+<p>The <code>html</code> command returns the contents of an HTML file.
+The client needs to know the name of the file in advance.</p>
+<p>For example, both the demo project and the Oregon project have a help page that explains how to use the GUI for that project.
+To get the instructions, the client would send a request with the project name, <em>e.g.</em></p>
+<pre><code> http://localhost:8000/html/demo/welcome.html
+</code></pre>
+<h2 id="optipassp"><code>optipass/P</code></h2>
+<p>The <code>optipass</code> command is a request to run OptiPass.
+The URL for this command is more complicated than the others.
+The project name is specified right after the command name, but after that it expects a series of <strong>query parameters</strong>.</p>
+<p>Query parameters appear at the end of the URL, after a question mark.
+The format for each parameter is a name, an equal sign, and a value.
+When there is more than one parameter the name-value pairs are separated by an ampersand.</p>
+<p>Here is a partial example, a request to run OptiPass using the demo project, a target named T1, and barriers from the region named Red Fork:</p>
+<pre><code>http://localhost:8000/optipass/demo?targets=T1&amp;regions=Red+Fork
+</code></pre>
+<p>Note that the project name is specified the same way as it is in the other commands, before the question mark (it's a <strong>path parameter</strong>).
+Note also there are no spaces in the URL.
+The space in the name "Red Fork" is converted to a plus sign.</p>
+<p>A parameter can appear more than once.
+The server will collect all the values and put them in a list, in the order they appear in the URL.
+To run OptiPass with two targets, T1 and T2, the URL would be</p>
+<pre><code>http://localhost:8000/optipass/demo?targets=T1&amp;targets=T2&amp;...
+</code></pre>
+<p>The final URL is going to be very complicated, but fortunately the queries can be generated automatically, for example using a Python library named Requests (which is used by <a href="https://github.com/conery/op-client"><code>op-client</code></a>).</p>
+<p>The complete list of parameters for the <code>optipass</code> command are shown in the table below.
+If the "Value" colum has "list" it means the argument can be specified multiple times and all values will be collected into a list.</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Value</th>
+<th>Required?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>project</code></td>
+<td>string</td>
+<td>yes</td>
+<td>project name (a path parameter)</td>
+</tr>
+<tr>
+<td><code>regions</code></td>
+<td>list of strings</td>
+<td>yes</td>
+<td>region names as they appear in the barrier file</td>
+</tr>
+<tr>
+<td><code>targets</code></td>
+<td>list of strings</td>
+<td>yes</td>
+<td>2-letter target IDs</td>
+</tr>
+<tr>
+<td><code>budgets</code></td>
+<td>list of three integers</td>
+<td>yes</td>
+<td>starting budget, increment, and count</td>
+</tr>
+<tr>
+<td><code>weights</code></td>
+<td>list of integers</td>
+<td>no</td>
+<td>if used there must be one for each target</td>
+</tr>
+<tr>
+<td><code>mapping</code></td>
+<td>string</td>
+<td>no</td>
+<td>column name file, <em>e.g.</em> <code>current</code> or <code>future</code></td>
+</tr>
+<tr>
+<td><code>tempdir</code></td>
+<td>string</td>
+<td>no</td>
+<td>directory with existing results (used in testing)</td>
+</tr>
+</tbody>
+</table>
+<p>Note that the server that handles this request must be running on a Windows system with OptiPass installed (but see the note about testing, below).</p>
+<p>This request will run OptiPass with data from the demo project, with a single budget of $400,000, using all the gates and both targets, with weight 3 for T1 and weight 1 for T2:</p>
+<pre><code>&gt; curl 'http://localhost/op/optipass/demo?regions=Trident&amp;regions=Red+Fork&amp;budgets=400000&amp;budgets=0&amp;budgets=1&amp;targets=T1&amp;targets=T2&amp;weights=3&amp;weights=1'
+</code></pre>
+<p>The result returned from the server will be a dictionary containing two tables (in the form of CSV files).
+The first has one row for each budget, and shows which gates were selected and the potential benefit.
+The second has one row for each gate.</p>
+<p>The request in the example above is the same one used for Example 4 in the OptiPass manual.  The output should agree with the table in Box 11.</p>
+<h2 id="_1"></h2>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../data/" class="btn btn-neutral float-left" title="Data Models"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../install/" class="btn btn-neutral float-right" title="Installation and Configuration">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../data/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../install/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

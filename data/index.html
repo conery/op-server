@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Data Files - OptiPass Server</title>
+    <title>Data Models - OptiPass Server</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -14,7 +14,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Data Files";
+        var mkdocs_page_name = "Data Models";
         var mkdocs_page_input_path = "data.md";
         var mkdocs_page_url = null;
       </script>
@@ -33,7 +33,10 @@
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
           <a href=".." class="icon icon-home"> OptiPass Server
-        </a><div role="search">
+        </a>
+        <div class="version">
+          Version 1.0.1
+        </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
   </form>
@@ -42,37 +45,33 @@
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption"><span class="caption-text">Home</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="..">REST Server for OptiPass</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">Installation</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">Documentation</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Data Files</a>
+                  <li class="toctree-l1"><a class="reference internal" href="..">A REST Server for OptiPass™</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Data Models</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#projects">Projects</a>
-    </li>
     <li class="toctree-l2"><a class="reference internal" href="#barriers">Barriers</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#targets">Targets</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#column-maps">Column Maps</a>
+    <li class="toctree-l2"><a class="reference internal" href="#passability">Passability</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#projects">Projects</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#example">Example</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#running-optipass-with-the-example-data">Running OptiPass with the Example Data</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#a-note-about-scaled-data">A Note About Scaled Data</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_1"></a>
-    </li>
     </ul>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api/">API</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Installation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../install/">Installation and Configuration</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../modules/">Modules</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../tests/">Tests</a>
@@ -92,8 +91,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Documentation</li>
-      <li class="breadcrumb-item active">Data Files</li>
+          <li class="breadcrumb-item">Home</li>
+      <li class="breadcrumb-item active">Data Models</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -102,170 +101,198 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="data-files">Data Files</h1>
-<p>All of the data managed by the server is in the <code>static</code> folder.  The three types of data are barrier files, target descriptions, and column name mappings, each in a separate subfolder.</p>
-<h2 id="projects">Projects</h2>
-<p>Inside each subfolder there are additional folders for each data set.  The name of the folder is the <strong>project name</strong>.</p>
-<p>The GitHub repository includes a project named <code>demo</code> that is based on the examples in the OptiPass user manual (https://www.ecotelligence.net/home/optipass).  </p>
-<p>Each additional data set will go in its own set of folders.  As an example, the server for tide gates on the Oregon Coast has a project named <code>oregon</code>, which leads to this structure:</p>
-<pre><code>static
-├── barriers
-│   ├── demo
-│   │   └── ...
-│   └── oregon
-│       └── ...
-├── colnames
-│   ├── demo
-│   │   └── ...
-│   └── oregon
-│       └── ...
-└── targets
-    ├── demo
-    │   └── ...
-    └── oregon
-        └── ...
-</code></pre>
+                <h1 id="data-models">Data Models</h1>
+<p>The three main types of data managed by the server are <strong>barriers</strong>, <strong>targets</strong>, and <strong>passability</strong>.</p>
 <h2 id="barriers">Barriers</h2>
-<p>A barrier file is a table (in CSV format) with one row for each tide gate, culvert, or other object that can restrict the flow of water in a river system.</p>
-<p>The first three columns are:</p>
+<p>A barrier can be a tide gate, culvert, or any other impediment to fish migration.</p>
+<p>Barrier data is kept in tables that have one row for each barrier.
+The columns of the table describe the key attributes:</p>
 <ul>
-<li><code>BARID</code>, a unique barrier ID</li>
-<li><code>REGION</code>, the name of the region the barrier is in (typically the name of a river system)</li>
-<li><code>DSID</code>, the ID of the nearest downstream barrier (OptiPass requires each barrier to have at most one downstream barrier)</li>
+<li>a unique <strong>ID</strong></li>
+<li>a <strong>region</strong> name, which is typically the name of an estuary or river system</li>
+<li>the ID of the barrier immediately downstream; we use the acronym <strong>DSID</strong> (this is left empty if the barrier is the at the mouth of the river)</li>
+<li>the estimated <strong>cost</strong> to repair the barrier</li>
+<li>the barrier's <strong>location</strong>, typically represented by latitude and longitude.</li>
 </ul>
-<p>The last two columns are</p>
-<ul>
-<li>
-<p><code>COST</code>, the dollar amount for replacing or repairing the barrier (any units can be used, as long as they are all the same)</p>
-</li>
-<li>
-<p><code>NPROJ</code>, an integer that is either 0 or 1 in our data sets.  1 means the barrier should be included an any analysis of the region it belongs to, 0 means the barrier should not included (<em>e.g.</em> this column might be 0 if a barrier is a dam that cannot be replaced or if a landowner does not want it in the data set).</p>
-</li>
-</ul>
-<p>The middle rows of the table has columns that describe restoration targets, described in the next section.</p>
+<p>There may be additional data that can be used by a client, for example a barrier type (tide gate, culvert, <em>etc</em>) or a descriptive name ("Jones Farm").</p>
 <h2 id="targets">Targets</h2>
-<p>Each time we run OpitPass we give it a budget value.  It will return the IDs of a set of barriers that provide the most benefit for that budget.  The barriers it chooses are based on our goals.  If the goal is to improve fish migration, the benefits will be an increase in the amount of river habitat in the region upstream from a barrier.  If the goal is to protect farmland from flooding, the benefits will be an increase in the amount of acreage protected.</p>
-<p>The general term for these goals is <strong>restoration target</strong>, or simply "target".  A file named <code>targets.csv</code> contains descriptions of targets that can be used by the server.  The file has one row per target.  The columns in the file are:</p>
+<p>Stakeholders can have several different goals for a restoration project.
+They may want to improve fish passage, or protect farmland or other infrastructure.
+Within these general categories are more specific goals.
+Different species of fish might find it easier to get past a barrier.
+Tide gates set up to protect infrastructure might have different capabilities for farms, roads, or buildings.</p>
+<p>Descriptions of targets are also kept in tables, with one row for each target.
+The columns of this table describe the attributes of each target:</p>
 <ul>
-<li><code>abbrev</code>, a unique two-letter target ID (which will also be used in the column mapping table, described in the next section)</li>
-<li><code>long</code>, a string that is displayed in the GUI shown by a server to allow users to choose targets to use</li>
-<li><code>short</code>, a shorter target name that will be used in tables and plots</li>
-<li><code>label</code>, a string with units to use on axes in plots</li>
-<li><code>infra</code>, either True or False, depending on whether this target is for infrastructure such as buildings or farm land (True) or fish migration (False)</li>
+<li>the target name, typically the name of fish species ("Coho Salmon") or a type of infrastructure ("Roads &amp; Railroads")</li>
+<li>a unique two-letter identifier, often an abbreviation of the target name ("CO", "RR")</li>
+<li>a shortened name used in output tables ("Coho", "Roads")</li>
+<li>a descriptive name used to label plots; this name should include units ("Potential Habitat (miles)" or "Roads Protected (miles)")</li>
 </ul>
-<h2 id="column-maps">Column Maps</h2>
-<p>In order to use targets we need to quantify the benefits of repairing or replacing barriers.  We do this by including three columns in the barrier table for each target:</p>
+<h2 id="passability">Passability</h2>
+<p>When OptiPass is searching for the most effective combination of barriers to replace for a given amount of money it needs to know what the potential gains are for replacing a barrier.
+This is where the concept of <strong>passability</strong> is used.</p>
+<p>Every barrier has some effect on each target.
+The relevant information is</p>
 <ul>
-<li>The <strong>habitat</strong> column is the size of the area immediately upstream from a barrier.  For fish migration targets, habitat could be expressed as the number of river miles between a barrier and the barrier(s) immediately upstream.  If the goal is to protect farmland, habitat could be measured in acres.</li>
-<li>The <em>passability</em> of a barrier is a measure of how much habitat is available upstream from the barrier.  It is represented by a number between 0 (no habitat is available upstream) to 1 (all habitat upstream is reachable).  The <strong>pre-mitigation passability</strong> column in the table represents the current passability, before any restoration is done.</li>
-<li>The third column is another passability value, the <strong>post-mitigation passability</strong>, which is the potential passability after replacing or repairing the barrier.</li>
+<li>the <strong>habtitat</strong> immediately upstream from the barrier, up to the next barrier if there is one, or to the end of the river</li>
+<li>the current level of passability (abbreviated as <strong>prepass</strong>), represented by a number between 0 (completely blocked) and 1 (totally passable)</li>
+<li>the potential level of passability if the barrier is repaired or replaced (abbreviated <strong>postpass</strong>), also a number between 0 and 1</li>
 </ul>
-<p>A data set can have any number of targets.  Each target is a separate group of three columns in the table.</p>
-<p>A column map table connects column descriptions shown to users (from the targets table) to quantified benefits (in the barriers table).  The table has one row for each target.  The first column is the target ID (the two-letter abbreviation from the targets table).  The remaining columns are the names of columns in the barriers table that have the habitat and passability values for the target.</p>
+<p>For fish targets habitat is the number of river miles above the barrier. This can be different for each species, <em>e.g.</em> a river can be a better food source or better spawning grounds for different species.</p>
+<p>For infrastructure targets we still use the term "habitat" even though the meaning of this attribute will not be the same.  For buildings the "habitat" value is the number of buildings protected, for farmland it would be the number of acres, and so on.</p>
+<p>In order to do calculations that combine different types of targets the tables also include a <strong>scaled habitat</strong> value, where the different types of habitat numbers have been converted to a common scale.
+The scaled values are given to OptiPass so it can compare targets of all types.  The original unscaled values are used in plots and output tables.</p>
+<h2 id="projects">Projects</h2>
+<p>The data managed by the server can be organized into separate projects.
+The server comes with a <strong>demo project</strong> that has the example data from the <em>OptiPass User Manual</em>.  Users can add their own data for actual river systems in one or more additional projects. For example, a project named <strong>oregon</strong> has descriptions of over 1000 tide gates in 10 river systems on the Oregon coast.</p>
+<blockquote>
+<p><em>The tables for the Oregon project are used in some examples but are not included in the GitHub repo.</em></p>
+</blockquote>
+<p>Projects not only include the barrier data but also formatting information used by a client.
+This includes geographic coordinates so barriers can be plotted on a map and various descriptions in HTML files that can be displayed by a graphical user interface.</p>
+<p>Detailed instructions for how to format barrier files, target descriptions, passability tables, and project descriptions can be found in <a href="../install/">Installation and Configuration</a>.</p>
 <h2 id="example">Example</h2>
-<p>The small river system used as an example in the OptiPass user manual has six barriers, named <em>A</em> through <em>F</em>.  <em>A</em> is at the mouth of the river, and the rest are all upstream from <em>A</em>:</p>
+<p>The small river system used as an example in the OptiPass user manual has six barriers, named <code>A</code> through <code>F</code>.  <code>A</code> is at the mouth of the river, and the rest are all upstream from <code>A</code>:</p>
 <p><img alt="image-20240728103324448" src="../assets/image-20240728103324448.png" /></p>
-<p>At each node $p^0$ is the pre-mitigation passability, $c$ is the cost to repair the barrier, and $h$ is the habitat (in river kilometers).  In this example barrier <em>D</em> is a natural barrier that cannot be replaced, so there is no cost associated with this node.</p>
-<p>The figure above shows values for only one target.  Later in the manual there is an example that has a second target.  We put the data for both targets in our barrier file.  Columns <code>HAB1</code>, <code>PRE1</code>, and <code>POST1</code> are for the first target, and <code>HAB2</code>, <code>PRE2</code>, and <code>POST2</code> are for the second target.  The final data set is in <code>static/barriers/demo/barriers.csv</code> (shown here as a table to make it more readable):</p>
+<p>At each barrier <em>p⁰</em> is the pre-mitigation (prepass) value, <em>c</em> is the cost to repair the barrier, and <em>h</em> is the habitat (in river kilometers) directly upriver from the barrier.  In this example barrier <code>D</code> is a natural barrier that cannot be replaced, so there is no cost associated with this node.</p>
+<p>In order to show how barriers can be organized into regions and displayed in a GUI we put the barriers on an imaginary map and assigned them to two different rivers.  The barrier file has these columns (plus a few more not shown here):</p>
 <table>
 <thead>
 <tr>
-<th>BARID</th>
-<th>REGION</th>
+<th>ID</th>
+<th>region</th>
 <th>DSID</th>
+<th>cost</th>
+<th>X</th>
+<th>Y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Trident</td>
+<td>NA</td>
+<td>250000</td>
+<td>330</td>
+<td>202</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Red Fork</td>
+<td>A</td>
+<td>120000</td>
+<td>235</td>
+<td>230</td>
+</tr>
+<tr>
+<td>C</td>
+<td>Red Fork</td>
+<td>B</td>
+<td>70000</td>
+<td>148</td>
+<td>220</td>
+</tr>
+<tr>
+<td>D</td>
+<td>Trident</td>
+<td>A</td>
+<td>NA</td>
+<td>195</td>
+<td>335</td>
+</tr>
+<tr>
+<td>E</td>
+<td>Trident</td>
+<td>D</td>
+<td>100000</td>
+<td>100</td>
+<td>440</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Trident</td>
+<td>D</td>
+<td>50000</td>
+<td>125</td>
+<td>450</td>
+</tr>
+</tbody>
+</table>
+<p>The figure above shows values for only one target.  Later in the manual there is an example that has a second target.  We put the data for both targets in a passability table:</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
 <th>HAB1</th>
 <th>PRE1</th>
 <th>POST1</th>
 <th>HAB2</th>
 <th>PRE2</th>
 <th>POST2</th>
-<th>COST</th>
-<th>NPROJ</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>A</td>
-<td>Test1</td>
-<td>NA</td>
 <td>2.1</td>
 <td>0.4</td>
 <td>1.0</td>
 <td>1.68</td>
 <td>0.6</td>
 <td>1.0</td>
-<td>250</td>
-<td>1</td>
 </tr>
 <tr>
 <td>B</td>
-<td>Test1</td>
-<td>A</td>
 <td>0.9</td>
 <td>0.0</td>
 <td>1.0</td>
 <td>0.72</td>
 <td>0.0</td>
 <td>1.0</td>
-<td>120</td>
-<td>1</td>
 </tr>
 <tr>
 <td>C</td>
-<td>Test1</td>
-<td>B</td>
 <td>4.3</td>
 <td>0.3</td>
 <td>1.0</td>
 <td>3.44</td>
 <td>0.45</td>
 <td>1.0</td>
-<td>70</td>
-<td>1</td>
 </tr>
 <tr>
 <td>D</td>
-<td>Test1</td>
-<td>A</td>
 <td>1.7</td>
 <td>0.5</td>
 <td>NA</td>
 <td>1.36</td>
 <td>0.75</td>
 <td>NA</td>
-<td>NA</td>
-<td>0</td>
 </tr>
 <tr>
 <td>E</td>
-<td>Test1</td>
-<td>D</td>
 <td>1.2</td>
 <td>0.2</td>
 <td>1.0</td>
 <td>0.96</td>
 <td>0.3</td>
 <td>1.0</td>
-<td>100</td>
-<td>1</td>
 </tr>
 <tr>
 <td>F</td>
-<td>Test1</td>
-<td>D</td>
 <td>0.5</td>
 <td>0.1</td>
 <td>1.0</td>
 <td>0.40</td>
 <td>0.15</td>
 <td>1.0</td>
-<td>50</td>
-<td>1</td>
 </tr>
 </tbody>
 </table>
-<p>Barrier <em>D</em> is the natural barrier that can't be replaced.  The <code>NPROJ</code> column is 0, and it has no cost or post-mitigation values since they aren't used.</p>
-<p>The target file for this data set assigns the IDs <code>T1</code> and <code>T2</code> to the two targets.  For this simple example we just gave them short names and left the other fields blank.  The target file in<code>static/targets/demo/targets.csv</code> looks like this:</p>
+<blockquote>
+<p><em>The barrier table and passability table have the same rows and row labels, so all this information could go in a single table.  We split them into two tables to make it easier to keep track of passability values.</em></p>
+</blockquote>
+<p>The two targets in the manual are referred to simply as "T1" and "T2", but we put them in a table to show how longer descriptions are represented:</p>
 <table>
 <thead>
 <tr>
@@ -273,27 +300,24 @@
 <th>long</th>
 <th>short</th>
 <th>label</th>
-<th>infra</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>T1</td>
-<td></td>
-<td>Target1</td>
-<td></td>
-<td></td>
+<td>Target 1</td>
+<td>Targ1</td>
+<td>Target 1 (km)</td>
 </tr>
 <tr>
 <td>T2</td>
-<td></td>
-<td>Target2</td>
-<td></td>
-<td></td>
+<td>Target 2</td>
+<td>Targ2</td>
+<td>Target 2 (km)</td>
 </tr>
 </tbody>
 </table>
-<p>Finally, to connect the target descriptions in the target file to the quantified benefits in the barrier file we have the following column name mapping (<code>static/colnames/demo/colnames.csv</code>):</p>
+<p>The final piece of information the server needs is a table that connects the targets (described in the target table above) with their passability values (names of columns in the passability table):</p>
 <table>
 <thead>
 <tr>
@@ -301,6 +325,7 @@
 <th>habitat</th>
 <th>prepass</th>
 <th>postpass</th>
+<th>unscaled</th>
 </tr>
 </thead>
 <tbody>
@@ -309,47 +334,26 @@
 <td>HAB1</td>
 <td>PRE1</td>
 <td>POST1</td>
+<td>HAB1</td>
 </tr>
 <tr>
 <td>T2</td>
 <td>HAB2</td>
 <td>PRE2</td>
 <td>POST2</td>
+<td>HAB2</td>
 </tr>
 </tbody>
 </table>
-<p>This tells the server to find data for target <code>T1</code> in columns <code>HAB1</code>, <code>PRE1</code>, and <code>POST</code>, and the data for target <code>T2</code> are in <code>HAB2</code>, <code>PRE2</code>, and <code>POST2</code>.</p>
-<h2 id="running-optipass-with-the-example-data">Running OptiPass with the Example Data</h2>
-<p>To run OptiPass with the sample data, send a GET request to the server, with the following options:</p>
-<ul>
-<li>
-<p>use "demo" as the project name</p>
-</li>
-<li>
-<p>use "Test1" as the region name</p>
-</li>
-<li>
-<p>use "T1", "T2", or both as the target name</p>
-</li>
-</ul>
-<p>If testing on the local machine the request will look something like this:</p>
-<pre><code>$ curl localhost:8000/optipass?project=demo&amp;regions=Test1&amp;targets=T1,T2&amp;...
-</code></pre>
-<p>where the remaining arguments specify budget levels.</p>
-<h2 id="a-note-about-scaled-data">A Note About Scaled Data</h2>
-<p>A real data set, such as the barrier file for the Oregon Coast, can have a combination of fish passage targets and infrastructure targets.  The units for fish passage are river miles (or kilometers or any other linear measure).  However, the units for the other targets can be quite different:  acres or hectares or other measures of land area for farm land, or miles for roads, or number of buildings.</p>
-<p>In order to consider all of these kinds of data in a single optimization run, the units need to be scaled before they are saved in the habitat columns in the barrier file.  To allow modelers to save the original unscaled data, the data file formats have additional columns not described above:</p>
-<ul>
-<li>there are four columns for each target, where the additional column is for the unscaled data in its original units; this column is not used by OptiPass, but is there so it can be used for other purposes</li>
-<li>there is an optional column in the colnames table to hold the name of the unscaled data</li>
-</ul>
-<h2 id="_1"></h2>
+<p>This tells the server to find data for target <code>T1</code> in columns <code>HAB1</code>, <code>PRE1</code>, and <code>POST1</code>, and the data for target <code>T2</code> are in <code>HAB2</code>, <code>PRE2</code>, and <code>POST2</code>.</p>
+<p>Since the demo project does not have scaled data (habitat for both targets is defined in terms of river miles) the name in the <code>unscaled</code> column is the same as the name in the <code>habitat</code> column.
+For a data set with scaled habitats there would be four columns for each target in the passability table and the column name table would refer to all four names.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../install/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../modules/" class="btn btn-neutral float-right" title="Modules">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href=".." class="btn btn-neutral float-left" title="A REST Server for OptiPass™"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../api/" class="btn btn-neutral float-right" title="API">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -372,10 +376,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../install/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../modules/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../api/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
