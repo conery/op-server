@@ -80,12 +80,12 @@ def read_text_file(project: str, area: str, fn: str) -> str:
         the contents of the file, as a single string
     '''
     p = Path(area) / project / fn
+    if not p.exists():
+        raise FileNotFoundError(p)
     logging.info(f'reading text file: {p}')
-    try:
-        with open(p) as f:
-            return f.read().rstrip()
-    except Exception as err:
-        raise HTTPException(status_code=404, detail=f'error reading {p}')
+    
+    with open(p) as f:
+        return f.read().rstrip()
     
 ###
 #
@@ -113,22 +113,14 @@ async def projects() -> list[str]:
 
 @app.get("/html/{project}/{filename}")
 async def html(project: str, filename: str) -> str:
-    if project in project_names:
-        return read_text_file(project, HTMLDIR, filename)
-    else:
+    if project not in project_names:
         raise HTTPException(status_code=404, detail=f'html: unknown project: {project}')
-
-# ###
-# # Return a static image for a project
-
-# @app.get("/image/{project}/{filename}")
-# async def image(project: str, filename: str) -> FileResponse:
-#     if project in project_names:
-#         p = Path(IMAGEDIR) / project / filename
-#         logging.info(f'image: {p}')
-#         return FileResponse(p)
-#     else:
-#         raise HTTPException(status_code=404, detail=f'html: unknown project: {project}')
+    try:
+        return read_text_file(project, HTMLDIR, filename)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f'file not found: {filename}')
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f'server error: {err}')
 
 ###
 # Return the barrier file for a project.
@@ -141,11 +133,15 @@ async def barriers(project: str) -> dict:
     Returns:
         the barrier data file for a project, as one long string.
     '''
-    if project in project_names:
+    if project not in project_names:
+        raise HTTPException(status_code=404, detail=f'barriers: unknown project: {project}')
+    try:
         barriers = read_text_file(project, BARRIERS, BARRIER_FILE)
         return {'project': project, 'barriers': barriers}
-    else:
-        raise HTTPException(status_code=404, detail=f'barriers: unknown project: {project}')
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f'file not found: {BARRIERS}/{BARRIER_FILE}')
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f'server error: {err}')
 
 ###
 # Return the settings for displaying a map for a project.
@@ -158,11 +154,15 @@ async def mapinfo(project: str) -> dict:
     Returns:
         a dictionary (JSON format) with settings for displaying the map for a project.
     '''
-    if project in project_names:
+    if project not in project_names:
+        raise HTTPException(status_code=404, detail=f'mapinfo: unknown project: {project}')
+    try:
         info = read_text_file(project, MAPS, MAPINFO_FILE)
         return {'project': project, 'mapinfo': info}
-    else:
-        raise HTTPException(status_code=404, detail=f'mapinfo: unknown project: {project}')
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f'file not found: {MAPS}/{MAPINFO_FILE}')
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f'server error: {err}')
 
 
 ###
@@ -171,7 +171,13 @@ async def mapinfo(project: str) -> dict:
 @app.get("/map/{project}/{filename}")
 async def map(project: str, filename: str) -> FileResponse:
     p = Path(MAPS) / project / filename
-    return FileResponse(p)
+    if not p.exists():
+        raise HTTPException(status_code=404, detail=f'map: file not found: {p}')
+    try:
+        resp = FileResponse(p)
+        return resp
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f'server error: {err}')
 
 ###
 # Return the restoration target descriptions
@@ -185,13 +191,16 @@ async def targets(project: str) -> dict:
         the CSV file containing restoration target descriptions for a project
         and a plain text file containing the layout in the GUI
     '''
-
-    if project in project_names:
+    if project not in project_names:
+        raise HTTPException(status_code=404, detail=f'targets: unknown project: {project}')
+    try:
         targets = read_text_file(project, TARGETS, TARGET_FILE)
         layout = read_text_file(project, TARGETS, LAYOUT_FILE)
         return {'project': project, 'targets': targets, 'layout': layout}
-    else:
-        raise HTTPException(status_code=404, detail=f'targets: unknown project: {project}')
+    except FileNotFoundError as err:
+        raise HTTPException(status_code=404, detail=str(err))
+    except Exception as err:
+        raise HTTPException(status_code=500, detail=f'server error: {err}')
 
 ###
 # Return a description of the mappings for a project -- either a single file
